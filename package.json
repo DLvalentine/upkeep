@@ -11,6 +11,8 @@
     "deploy": "npx gh-pages-clean && npm run build && gh-pages -d dist"
   },
   "dependencies": {
+    "fuse.js": "^7.5.0",
+    "localforage": "^1.10.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
