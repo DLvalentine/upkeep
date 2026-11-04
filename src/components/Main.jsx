@@ -13,38 +13,40 @@ import SearchBox from './SearchBox';
 import Browser from './Browser';
 import FilterPopover from './FilterPopover';
 import SearchSettingsPopover from './SearchSettingsPopover';
+import LoadingScreen from './LoadingScreen';
 
 // Utils
 import { getCopyLimit } from '../util/cardRules';
-import { exportDeck, importDeck } from '../util/decklist';
+import { importDeck } from '../util/decklist';
 
-const data = await loadCardData();
-const sampleDeck = importDeck(
-    `
-    Deck
-    4 Gleaming Geardrake (MKM) 205
-    10 Island (USG) 336
-    11 Mountain (USG) 343
-    1 Saheeli, Filigree Master (BRO) 219
-    2 Reckless Detective (MKM) 141
-    2 Curious Inquiry (MKM) 51
-    4 Shock (MKM) 144
-    2 Dramatic Accusation (MKM) 53
-    2 Harried Dronesmith (MKM) 131
-    2 Deduce (MKM) 52
-    4 Sokenzan Smelter (NEO) 164
-    4 Voltage Surge (NEO) 171
-    2 Coastal Bulwark (BRO) 76
-    2 Swiftwater Cliffs (MOM) 273
-    2 Negate (DMU) 58
-    2 Detective's Satchel (MKM) 196
-    2 Mistway Spy (MKM) 65
-    2 The Echoverse Fulcrum (FRA) 169
-    `,
-    data
-);
+const SAMPLE_DECKLIST = `
+Deck
+4 Gleaming Geardrake (MKM) 205
+10 Island (USG) 336
+11 Mountain (USG) 343
+1 Saheeli, Filigree Master (BRO) 219
+2 Reckless Detective (MKM) 141
+2 Curious Inquiry (MKM) 51
+4 Shock (MKM) 144
+2 Dramatic Accusation (MKM) 53
+2 Harried Dronesmith (MKM) 131
+2 Deduce (MKM) 52
+4 Sokenzan Smelter (NEO) 164
+4 Voltage Surge (NEO) 171
+2 Coastal Bulwark (BRO) 76
+2 Swiftwater Cliffs (MOM) 273
+2 Negate (DMU) 58
+2 Detective's Satchel (MKM) 196
+2 Mistway Spy (MKM) 65
+2 The Echoverse Fulcrum (FRA) 169
+`;
 
 export default function Main() {
+    // Card data is required before the sample deck can be resolved.
+    const [isCardDataReady, setIsCardDataReady] = useState(false);
+    const [cardDataError, setCardDataError] = useState(false);
+    const [loadAttempt, setLoadAttempt] = useState(0);
+
     // Search query and debounce handler.
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedQuery = useDebounce(searchQuery, 500);
@@ -61,7 +63,34 @@ export default function Main() {
     // Search results
     const [searchResults, setSearchResults] = useState(null);
 
-    const [deck, setDeck] = useState(sampleDeck.deck || { cards: {}, size: 0 });
+    const [deck, setDeck] = useState({ cards: {}, size: 0 });
+
+    useEffect(() => {
+        let cancelled = false;
+
+        loadCardData()
+            .then(cards => {
+                if (cancelled) return;
+
+                setDeck(importDeck(SAMPLE_DECKLIST, cards).deck);
+                setIsCardDataReady(true);
+            })
+            .catch(error => {
+                if (!cancelled) {
+                    console.error('Card data failed to load:', error);
+                    setCardDataError(true);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [loadAttempt]);
+
+    const handleRetryCardDataLoad = () => {
+        setCardDataError(false);
+        setLoadAttempt(attempt => attempt + 1);
+    };
 
     const addCard = (card) => {
         const copyLimit = getCopyLimit(card);
@@ -179,6 +208,15 @@ export default function Main() {
         setSearchQuery('');
         setSearchResults(null);
     };
+
+    if (!isCardDataReady) {
+        return (
+            <LoadingScreen
+                error={cardDataError}
+                onRetry={handleRetryCardDataLoad}
+            />
+        );
+    }
 
     return (
         <div className="flex flex-col gap-y-6">
