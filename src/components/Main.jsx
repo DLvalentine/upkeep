@@ -2,7 +2,7 @@
 // Libs
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Funnel, FunnelPlus } from 'lucide-react';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 
 // Services
 import { findCards } from '../services/cardService';
@@ -11,6 +11,7 @@ import { findCards } from '../services/cardService';
 import Logo from './Logo';
 import SearchBox from './SearchBox';
 import Browser from './Browser';
+import FilterPopover from './FilterPopover';
 
 export default function Main() {
     // Search query and debounce handler.
@@ -24,21 +25,27 @@ export default function Main() {
     const [searchKeys, setSearchKeys] = useState(['name']);
     const [filters, setFilters] = useState({});
 
-    // Search results: holds the array of objects returned from the card service's search function
+    // Search results
     const [searchResults, setSearchResults] = useState(null);
 
     useEffect(() => {
-        if (debouncedQuery.length < 3)
-            return;
+        const query = debouncedQuery.trim();
 
-        if (!debouncedQuery.trim()) {
+        if (query.length < 3) {
             setSearchResults(null);
             return;
         }
 
         let cancelled = false;
 
-        findCards(debouncedQuery, strictSearch, sortKey, sortDesc, searchKeys, filters)
+        findCards(
+            query,
+            strictSearch,
+            sortKey,
+            sortDesc,
+            searchKeys,
+            filters
+        )
             .then(results => {
                 if (!cancelled) {
                     setSearchResults(results);
@@ -53,14 +60,20 @@ export default function Main() {
         return () => {
             cancelled = true;
         };
-    }, [debouncedQuery, sortDesc]);
+    }, [
+        debouncedQuery,
+        strictSearch,
+        sortKey,
+        sortDesc,
+        searchKeys,
+        filters
+    ]);
 
     const handleSearchChange = (e) => {
         const value = e.target.value;
 
         setSearchQuery(value);
 
-        // Clear results immediately instead of waiting for debounce.
         if (!value.trim()) {
             setSearchResults(null);
         }
@@ -72,8 +85,12 @@ export default function Main() {
     };
 
     return (
-        <div className='flex flex-col gap-y-6'>
-            <div className="inline-flex gap-2 items-center bg-[var(--app-accent)] border-b-2 border-[var(--bg-nav)]">
+        <div className="flex flex-col gap-y-6">
+            <div className="
+                inline-flex gap-2 items-center
+                bg-[var(--app-accent)]
+                border-b-2 border-[var(--bg-nav)]
+            ">
                 <Logo />
 
                 <SearchBox
@@ -82,12 +99,33 @@ export default function Main() {
                     showX={!!searchQuery}
                     onClickX={handleClear}
                 />
-                <div className='inline-flex gap-4'>
-                    {sortDesc && <ArrowDownNarrowWide size={24} style={{ color: 'var(--app-secondary)' }} onClick={() => { setSortDesc(false) }} /> || <ArrowUpNarrowWide size={24} style={{ color: 'var(--app-secondary)' }} onClick={() => { setSortDesc(true) }} />}
-                    {Object.keys(filters)?.length && <FunnelPlus size={24} style={{ color: 'var(--app-secondary)' }} /> || <Funnel size={24} style={{ color: 'var(--app-secondary)' }} />}
+
+                <div className="inline-flex gap-4 items-center">
+                    {sortDesc ? (
+                        <ArrowDownNarrowWide
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                            onClick={() => setSortDesc(false)}
+                        />
+                    ) : (
+                        <ArrowUpNarrowWide
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                            onClick={() => setSortDesc(true)}
+                        />
+                    )}
+
+                    <FilterPopover
+                        filters={filters}
+                        onApply={setFilters}
+                    />
                 </div>
             </div>
-            <Browser query={debouncedQuery} cards={searchResults} />
+
+            <Browser
+                query={debouncedQuery}
+                cards={searchResults}
+            />
         </div>
     );
 }

@@ -1,12 +1,16 @@
 // Libs
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { MoonLoader } from 'react-spinners';
 import { SquarePlus, SquareMinus } from 'lucide-react';
+
+// Utils
+import { isCardHoverSuppressed } from '../util/hoverManager';
 
 export default function Card({ uri }) {
     const [loaded, setLoaded] = useState(false);
     const [hovered, setHovered] = useState(false);
     const hoverTimer = useRef(null);
+    const cardRef = useRef(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
     const previewWidth = Math.min(
@@ -17,7 +21,35 @@ export default function Card({ uri }) {
     const offset = 24;
     const padding = 16;
 
+    // Dismiss preview when the card leaves the viewport
+    useEffect(() => {
+        const card = cardRef.current;
+        if (!card) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    clearTimeout(hoverTimer.current);
+                    setHovered(false);
+                }
+            },
+            { threshold: 0 }
+        );
+
+        observer.observe(card);
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(hoverTimer.current);
+        };
+    }, []);
+
     const handleMouseMove = (e) => {
+        if (isCardHoverSuppressed()) {
+            clearTimeout(hoverTimer.current);
+            setHovered(false);
+            return;
+        }
 
         // Default: open to the right
         let x = e.clientX + offset;
@@ -45,7 +77,13 @@ export default function Card({ uri }) {
     };
 
     const handleMouseEnter = () => {
-        hoverTimer.current = setTimeout(() => setHovered(true), 400);
+        if (isCardHoverSuppressed()) return;
+
+        hoverTimer.current = setTimeout(() => {
+            if (!isCardHoverSuppressed()) {
+                setHovered(true);
+            }
+        }, 400);
     };
 
     const handleMouseLeave = () => {
@@ -56,6 +94,7 @@ export default function Card({ uri }) {
     return (
         <>
             <div
+                ref={cardRef}
                 className="relative w-full flex justify-center items-center aspect-[5/7] flex flex-col gap-1"
             >
                 {!loaded && (
@@ -77,12 +116,19 @@ export default function Card({ uri }) {
                     onMouseLeave={handleMouseLeave}
                     onMouseMove={handleMouseMove}
                 />
-                 {loaded &&
-                    <div className='flex flex-row gap-4'>
-                        <SquareMinus size={24} style={{color: 'var(--app-secondary)'}} />
-                        <SquarePlus size={24} style={{color: 'var(--app-secondary)'}} />
+
+                {loaded && (
+                    <div className="flex flex-row gap-4">
+                        <SquareMinus
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                        />
+                        <SquarePlus
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                        />
                     </div>
-                }
+                )}
             </div>
 
             {hovered && (

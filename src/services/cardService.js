@@ -99,6 +99,7 @@ export async function loadCardData() {
     }
 }
 
+// TODO -> need to add in a way to set exact
 /**
  * Search through the card data to find your card(s). Card data is pulled from local cache, filtered, then indexed before being searched.
  * @param {String} queryString - The user's search query
@@ -115,36 +116,43 @@ export async function loadCardData() {
  */
 export async function findCards(queryString, strictSearch = true, sortKey = 'edhrec_rank', sortDesc = true, searchKeys = ['name'], filters = {}) {
     const cards = await loadCardData();
-    const hasFilters = Object.keys(filters)?.length;
+
+    const types = filters.type
+        ? (Array.isArray(filters.type) ? filters.type : [filters.type])
+        : [];
+
+    const colors = filters.colorIdentity
+        ? (Array.isArray(filters.colorIdentity)
+            ? filters.colorIdentity
+            : [filters.colorIdentity]
+        ).map(c => c.toUpperCase())
+        : [];
+
+    const hasFilters =
+        types.length > 0 ||
+        colors.length > 0 ||
+        filters.cmc?.exact !== undefined ||
+        filters.cmc?.min !== undefined ||
+        filters.cmc?.max !== undefined;
 
     const filteredCards = hasFilters ? cards.filter(card => {
         // Type filter
-        if (filters.type) {
-            const types = Array.isArray(filters.type)
-                ? filters.type
-                : [filters.type];
-
+        if (types.length > 0) {
             if (!types.some(type =>
                 card.type_line?.toLowerCase().includes(type.toLowerCase())
             )) return false;
         }
 
         // Color identity filter
-        if (filters.colorIdentity) {
-            const colors = Array.isArray(filters.colorIdentity)
-                ? filters.colorIdentity.map(c => c.toUpperCase())
-                : [filters.colorIdentity.toUpperCase()];
-
+        if (colors.length > 0) {
             const cardColors = card.color_identity ?? [];
 
             if (filters.colorIdentityMode === 'exact') {
-                // Exact match: no additional colors allowed.
                 if (
                     cardColors.length !== colors.length ||
                     !colors.every(color => cardColors.includes(color))
                 ) return false;
             } else {
-                // Default: card must contain all selected colors.
                 if (!colors.every(color => cardColors.includes(color))) {
                     return false;
                 }
@@ -180,12 +188,23 @@ export async function findCards(queryString, strictSearch = true, sortKey = 'edh
             const aVal = a.item?.[0]?.v;
             const bVal = b.item?.[0]?.v;
 
-            if (parseInt(aVal, 10) !== NaN) {
-                return sortDesc ? aVal - bVal : bVal - aVal;
-            } else {
-                return sortDesc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+            // Missing values go to the bottom
+            if (aVal == null && bVal == null) return 0;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+
+            const aNum = Number(aVal);
+            const bNum = Number(bVal);
+
+            // Numeric comparison
+            if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
+                return sortDesc ? bNum - aNum : aNum - bNum;
             }
 
+            // String comparison
+            const comparison = String(aVal).localeCompare(String(bVal));
+
+            return sortDesc ? -comparison : comparison;
         }
     });
 
