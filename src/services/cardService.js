@@ -4,6 +4,14 @@ import Fuse from 'fuse.js';
 
 const ONE_HOUR_MS = 3_600_000;
 
+const SORT_KEYS = new Set([
+    'edhrec_rank',
+    'name',
+    'toughness',
+    'power',
+    'cmc',
+]);
+
 const EXCLUDED_LAYOUTS = new Set([
     'token',
     'double_faced_token',
@@ -115,6 +123,7 @@ export async function loadCardData() {
  */
 export async function findCards(queryString, strictSearch = true, sortKey = 'edhrec_rank', sortDesc = true, searchKeys = ['name'], filters = {}) {
     const cards = await loadCardData();
+    const validSortKey = SORT_KEYS.has(sortKey) ? sortKey : 'edhrec_rank';
 
     const types = filters.type
         ? (Array.isArray(filters.type) ? filters.type : [filters.type])
@@ -183,7 +192,7 @@ export async function findCards(queryString, strictSearch = true, sortKey = 'edh
     }) : cards;
 
     const fuse = new Fuse(filteredCards, {
-        keys: Array.from(new Set([sortKey, ...searchKeys])),
+        keys: Array.from(new Set([validSortKey, ...searchKeys])),
         threshold: strictSearch ? 0.19 : 0.39,
         sortFn: (a, b) => {
             const aVal = a.item?.[0]?.v;

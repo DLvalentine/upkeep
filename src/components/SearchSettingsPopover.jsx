@@ -10,8 +10,17 @@ import { suppressCardHover } from '../util/hoverManager';
 const SEARCH_KEY_OPTIONS = [
     { value: 'name', label: 'Name' },
     { value: 'oracle_text', label: 'Oracle Text' },
-    { value: 'type', label: 'Type Line' },
-    { value: 'flavor_text', label: 'Flavor Text' },
+    { value: 'type_line', label: 'Type Line' },
+];
+
+const DEFAULT_SORT_KEY = 'edhrec_rank';
+
+const SORT_KEY_OPTIONS = [
+    { value: 'edhrec_rank', label: 'EDHREC Rank' },
+    { value: 'name', label: 'Name' },
+    { value: 'toughness', label: 'Toughness' },
+    { value: 'power', label: 'Power' },
+    { value: 'cmc', label: 'Mana Value' },
 ];
 
 function normalizeSettings(settings = {}) {
@@ -26,19 +35,23 @@ function normalizeSettings(settings = {}) {
 export default function SearchSettingsPopover({
     settings,
     onApply,
+    sortKey,
+    onSortKeyChange,
     open,
     onOpenChange,
 }) {
     const [draft, setDraft] = useState(() =>
         normalizeSettings(settings)
     );
+    const [draftSortKey, setDraftSortKey] = useState(sortKey);
 
     // Restore applied settings whenever the popover opens.
     useEffect(() => {
         if (open) {
             setDraft(normalizeSettings(settings));
+            setDraftSortKey(sortKey);
         }
-    }, [open, settings]);
+    }, [open, settings, sortKey]);
 
     const toggleSearchKey = (value) => {
         setDraft(current => ({
@@ -52,19 +65,23 @@ export default function SearchSettingsPopover({
     const resetDraft = () => {
         const defaults = normalizeSettings();
         setDraft(defaults);
+        setDraftSortKey(DEFAULT_SORT_KEY);
         onApply(defaults);
+        onSortKeyChange(DEFAULT_SORT_KEY);
         onOpenChange(false);
     };
 
     const applySettings = () => {
         onApply(normalizeSettings(draft));
+        onSortKeyChange(draftSortKey);
         onOpenChange(false);
     };
 
     const hasCustomSettings =
         draft.strictSearch !== true ||
         draft.searchKeys.length !== 1 ||
-        draft.searchKeys[0] !== 'name';
+        draft.searchKeys[0] !== 'name' ||
+        draftSortKey !== DEFAULT_SORT_KEY;
 
     return (
         <Popover.Root
@@ -171,6 +188,36 @@ export default function SearchSettingsPopover({
                                     }
                                 />
                             </label>
+                        </section>
+
+                        <div className="border-t border-[var(--bg-nav)]" />
+
+                        {/* Sort Order */}
+                        <section className="flex flex-col gap-2">
+                            <label
+                                htmlFor="sort-key"
+                                className="text-sm font-semibold"
+                            >
+                                Sort By
+                            </label>
+
+                            <select
+                                id="sort-key"
+                                value={draftSortKey}
+                                onChange={event =>
+                                    setDraftSortKey(event.target.value)
+                                }
+                                className="rounded-md border border-[var(--bg-nav)] bg-black/10 p-2 text-sm"
+                            >
+                                {SORT_KEY_OPTIONS.map(option => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
                         </section>
 
                         <div className="border-t border-[var(--bg-nav)]" />

@@ -21,7 +21,7 @@ export default function Main() {
 
     // Search options
     const [sortKey, setSortKey] = useState('edhrec_rank');
-    const [sortDesc, setSortDesc] = useState(true);
+    const [sortDesc, setSortDesc] = useState(false);
     const [filters, setFilters] = useState({});
     const [searchSettings, setSearchSettings] = useState({
         strictSearch: true,
@@ -144,6 +144,8 @@ export default function Main() {
                     <SearchSettingsPopover
                         settings={searchSettings}
                         onApply={setSearchSettings}
+                        sortKey={sortKey}
+                        onSortKeyChange={setSortKey}
                         open={activePopover === 'search-settings'}
                         onOpenChange={open =>
                             setActivePopover(open ? 'search-settings' : null)
