@@ -76,6 +76,15 @@ export async function loadCardData() {
         return cachedCards;
     } else {
         const res = await fetch(`${import.meta.env.BASE_URL}cards.jsonl.gz`);
+
+        console.log({
+            url: res.url,
+            status: res.status,
+            contentType: res.headers.get('content-type'),
+            contentEncoding: res.headers.get('content-encoding'),
+            contentLength: res.headers.get('content-length'),
+        });
+
         const data = await res.arrayBuffer();
         const rawJSONL = await new Response(data).text();
         const parsedJSON = rawJSONL.trim().split('\n').map(JSON.parse).filter(isSearchableCard) || {};
