@@ -20,6 +20,9 @@ export default function Main() {
     const [searchResults, setSearchResults] = useState(null);
 
     useEffect(() => {
+        if (debouncedQuery.length < 3)
+            return;
+
         if (!debouncedQuery.trim()) {
             setSearchResults(null);
             return;
@@ -72,7 +75,7 @@ export default function Main() {
                     onClickX={handleClear}
                 />
             </div>
-            <Browser cards={searchResults}/>
+            <Browser query={debouncedQuery} cards={searchResults}/>
         </div>
     );
 }

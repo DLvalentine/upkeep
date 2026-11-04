@@ -18,6 +18,7 @@
     "lucide-react": "^1.67.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-spinners": "^0.17.1",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.3.4"
   },
