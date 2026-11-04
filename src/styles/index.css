@@ -24,3 +24,9 @@ input[type='text']:focus {
     border-color: var(--app-secondary);
     background-color: var(--app-panel);
 }
+
+@media (max-width: 1024px) {
+    :root {
+        min-width: 1200px;
+    }
+}
