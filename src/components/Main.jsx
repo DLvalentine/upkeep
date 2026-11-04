@@ -2,7 +2,7 @@
 // Libs
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
-import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Upload, Download } from 'lucide-react';
 
 // Services
 import { findCards, loadCardData } from '../services/cardService';
@@ -18,7 +18,7 @@ import DeckList from './DeckList';
 
 // Utils
 import { getCopyLimit } from '../util/cardRules';
-import { importDeck } from '../util/decklist';
+import { importDeck, exportDeck } from '../util/decklist';
 
 const SAMPLE_DECKLIST = `
 Deck
@@ -43,7 +43,50 @@ Deck
 `;
 
 export default function Main() {
+    const handleImportDeck = async () => {
+        try {
+            const decklist = await navigator.clipboard.readText();
+
+            if (!decklist.trim()) {
+                alert('Clipboard is empty.');
+                return;
+            }
+
+            const { deck: importedDeck, missingCards } = importDeck(
+                decklist,
+                cardData
+            );
+
+            setDeck(importedDeck);
+
+            if (missingCards.length > 0) {
+                alert(
+                    `Imported deck with ${missingCards.length} unresolved cards:\n\n` +
+                    missingCards.map(card =>
+                        `${card.quantity} ${card.name}`
+                    ).join('\n')
+                );
+            }
+        } catch (error) {
+            console.error('Deck import failed:', error);
+        }
+    };
+
+    const handleExportDeck = async () => {
+        try {
+            const decklist = exportDeck(deck);
+
+            await navigator.clipboard.writeText(decklist);
+
+            alert('Deck copied to clipboard!');
+        } catch (error) {
+            console.error('Deck export failed:', error);
+            alert('Unable to copy deck to clipboard.');
+        }
+    };
+
     // Card data is required before the sample deck can be resolved.
+    const [cardData, setCardData] = useState([]);
     const [isCardDataReady, setIsCardDataReady] = useState(false);
     const [cardDataError, setCardDataError] = useState(false);
     const [loadAttempt, setLoadAttempt] = useState(0);
@@ -66,6 +109,7 @@ export default function Main() {
 
     const [deck, setDeck] = useState({ cards: {}, size: 0 });
 
+    // Card data loading effect
     useEffect(() => {
         let cancelled = false;
 
@@ -73,6 +117,7 @@ export default function Main() {
             .then(cards => {
                 if (cancelled) return;
 
+                setCardData(cards);
                 setDeck(importDeck(SAMPLE_DECKLIST, cards).deck);
                 setIsCardDataReady(true);
             })
@@ -155,6 +200,7 @@ export default function Main() {
     };
 
 
+    // Primary search effect
     useEffect(() => {
         const query = debouncedQuery.trim();
 
@@ -275,6 +321,32 @@ export default function Main() {
                         sortKey={sortKey}
                         onSortKeyChange={setSortKey}
                     />
+
+                    <button
+                        type="button"
+                        aria-label="Import deck from clipboard"
+                        title="Import deck from clipboard"
+                        onClick={handleImportDeck}
+                        className="rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
+                    >
+                        <Upload
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                        />
+                    </button>
+
+                    <button
+                        type="button"
+                        aria-label="Export deck to clipboard"
+                        title="Export deck to clipboard"
+                        onClick={handleExportDeck}
+                        className="rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
+                    >
+                        <Download
+                            size={24}
+                            style={{ color: 'var(--app-secondary)' }}
+                        />
+                    </button>
                 </div>
             </div>
 
@@ -286,7 +358,7 @@ export default function Main() {
                     addCard={addCard}
                     removeCard={removeCard}
                 />
-                <DeckList deck={deck} addCard={addCard} removeCard={removeCard}/>
+                <DeckList deck={deck} addCard={addCard} removeCard={removeCard} />
             </div>
         </div>
     );
