@@ -3,15 +3,18 @@ import { useEffect, useState } from 'react';
 import * as Popover from '@radix-ui/react-popover';
 import { Funnel, X } from 'lucide-react';
 
+// Components
+import ManaCost from './ManaCost';
+
 // Utils
 import { suppressCardHover } from '../util/hoverManager';
 
 const COLOR_OPTIONS = [
-    { value: 'W', label: 'White' },
-    { value: 'U', label: 'Blue' },
-    { value: 'B', label: 'Black' },
-    { value: 'R', label: 'Red' },
-    { value: 'G', label: 'Green' }
+    { component: <ManaCost manaCost='{W}'/>, value: 'W', label: 'White' },
+    { component: <ManaCost manaCost='{U}'/>, value: 'U', label: 'Blue' },
+    { component: <ManaCost manaCost='{B}'/>, value: 'B', label: 'Black' },
+    { component: <ManaCost manaCost='{R}'/>, value: 'R', label: 'Red' },
+    { component: <ManaCost manaCost='{G}'/>, value: 'G', label: 'Green' }
 ];
 
 const TYPE_OPTIONS = [
@@ -191,7 +194,7 @@ export default function FilterPopover({
                     align="start"
                     sideOffset={10}
                     collisionPadding={12}
-                    className="z-50 w-80 max-h-[80vh] overflow-y-auto rounded-lg border border-[var(--bg-nav)] bg-[var(--app-panel)] text-[var(--app-text)] shadow-xl p-4"
+                    className="z-50 w-full max-h-[80vh] overflow-y-auto rounded-lg border border-[var(--bg-nav)] bg-[var(--app-panel)] text-[var(--app-text)] shadow-xl p-4"
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between mb-5">
@@ -227,19 +230,20 @@ export default function FilterPopover({
                                                 checked={draft.colorIdentity.includes(color.value)}
                                                 onChange={() => toggleValue('colorIdentity', color.value)}
                                             />
-                                            {color.value}
+                                            {color.component}
                                         </label>
                                     ))}
                                 </div>
                                 <label
-                                    className="flex items-center gap-1.5 cursor-pointer text-sm rounded-md px-2 py-1.5 select-none"
+                                    className="flex items-center gap-1.5 cursor-pointer text-sm rounded-md px-2 py-2.5 select-none"
                                 >
                                     <input
+                                        className='m-0 p-0'
                                         type="checkbox"
                                         checked={draft.colorIdentityExact ?? false}
                                         onChange={(e) => { setDraft(current => ({ ...current, colorIdentityExact: e.target.checked })) }}
                                     />
-                                    Exact
+                                    Exact Match (For mono-colors)
                                 </label>
                             </div>
                         </FilterGroup>
