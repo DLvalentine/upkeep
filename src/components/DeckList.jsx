@@ -7,8 +7,9 @@ import ManaCost from './ManaCost';
 
 // Utils
 import { isCardHoverSuppressed } from '../util/hoverManager';
+import { SquareMinus, SquarePlus } from 'lucide-react';
 
-function DeckItem({card}) {
+function DeckItem({ card }) {
     const [hovered, setHovered] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [previewLoaded, setPreviewLoaded] = useState(false);
@@ -90,17 +91,50 @@ function DeckItem({card}) {
         setHovered(false);
     };
 
-    return(
+    console.log(
+        card.colors.map((color) => {
+            return `var(--mana-${color.toLowerCase()}),`
+        }).join(' ')
+    )
+    return (
         <>
-            <p
+            <div
                 ref={itemRef}
-                className={uri ? 'cursor-pointer' : undefined}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onMouseMove={handleMouseMove}
+               style={{
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid transparent',
+                    background: `
+                        linear-gradient(var(--app-bg), var(--app-bg)) padding-box,
+                        linear-gradient(to right, ${
+                            card.colors?.length
+                                ? card.colors.map(color => `var(--mana-${color.toLowerCase()})`).join(', ')
+                                : 'var(--mana-nc)'
+                        }) border-box
+                    `
+                }}
+                className={`${uri ? 'cursor-pointer' : undefined} flex flex-row gap-4 items-baseline mb-2.5`}
             >
-                {card.quantity} {card.name} <ManaCost manaCost={card.mana_cost} size={20} />
-            </p>
+                <span className='translate-y-1 ml-2'>
+                    <SquareMinus size={18} />
+                </span>
+                <span className='translate-y-1 mr-3'>
+                    <SquarePlus size={18} />
+                </span>
+                <span>
+                    {card.quantity}
+                </span>
+                <span
+                    className='flex-1 truncate'
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseMove={handleMouseMove}
+                >
+                    {card.name}
+                </span>
+                <span className=' mr-3 cursor-default'>
+                    <ManaCost manaCost={card.mana_cost} size={20} />
+                </span>
+            </div>
 
             {hovered && (
                 <div
@@ -134,9 +168,8 @@ function DeckItem({card}) {
                                 onLoad={() => setPreviewLoaded(true)}
                                 onError={() => setPreviewError(true)}
                                 style={{ width: `${previewWidth - 16}px` }}
-                                className={`h-auto rounded-lg shadow-2xl select-none ${
-                                    previewLoaded ? 'block' : 'hidden'
-                                }`}
+                                className={`h-auto rounded-lg shadow-2xl select-none ${previewLoaded ? 'block' : 'hidden'
+                                    }`}
                             />
                         )}
                     </div>
@@ -165,10 +198,10 @@ export default function DeckList({ deck }) {
     });
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 h-[85vh] flex-[1] min-w-0">
             {cards.map((card) => {
                 return (
-                    <DeckItem key={card.id} card={card}/>
+                    <DeckItem key={card.id} card={card} />
                 )
             })}
         </div>

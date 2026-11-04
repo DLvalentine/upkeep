@@ -16,6 +16,15 @@
   --text-primary: #30243A;
   --text-secondary: #644b79;
 
+  /* MANA COLOR */
+  --mana-w: #F9FAF4;
+  --mana-u: #0E68AB;
+  --mana-b: #150B00;
+  --mana-r: #D3202A;
+  --mana-g: #00733E;
+  --mana-mc: #E8C08C;
+  --mana-nc: #A29E9F;
+
   /* RADII */
   --border-radius: 10px;
 }

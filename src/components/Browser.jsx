@@ -3,7 +3,7 @@ import Card from './Card';
 
 export default function Browser({ query, cards, addCard, deck, removeCard }) {
     return (
-        <div className="h-[85vh] w-[80%] pl-6 flex flex-col gap-4 overflow-y-scroll scrollbar scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)] pr-2">
+        <div className="h-[85vh] flex-[4] min-w-0 pl-6 flex flex-col gap-4 overflow-y-scroll scrollbar scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)] pr-2">
             <div className="grid grid-cols-5 content-start gap-6">
                 {cards?.map((card) => {
                     const uri = card?.item?.image_uris?.normal;
