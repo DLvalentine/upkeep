@@ -37,9 +37,8 @@ export default function SearchSettingsPopover({
     onApply,
     sortKey,
     onSortKeyChange,
-    open,
-    onOpenChange,
 }) {
+    const [open, setOpen] = useState(false);
     const [draft, setDraft] = useState(() =>
         normalizeSettings(settings)
     );
@@ -68,13 +67,18 @@ export default function SearchSettingsPopover({
         setDraftSortKey(DEFAULT_SORT_KEY);
         onApply(defaults);
         onSortKeyChange(DEFAULT_SORT_KEY);
-        onOpenChange(false);
+        setOpen(false);
     };
 
     const applySettings = () => {
         onApply(normalizeSettings(draft));
         onSortKeyChange(draftSortKey);
-        onOpenChange(false);
+    };
+
+    const closeAndApply = () => {
+        applySettings();
+        suppressCardHover(400);
+        setOpen(false);
     };
 
     const hasCustomSettings =
@@ -88,10 +92,11 @@ export default function SearchSettingsPopover({
             open={open}
             onOpenChange={nextOpen => {
                 if (!nextOpen) {
-                    suppressCardHover(400);
+                    closeAndApply();
+                    return;
                 }
 
-                onOpenChange(nextOpen);
+                setOpen(true);
             }}
         >
             <Popover.Trigger asChild>
@@ -100,11 +105,6 @@ export default function SearchSettingsPopover({
                     aria-label="Search settings"
                     title="Search settings"
                     className="relative flex items-center justify-center rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
-                    onClick={event => {
-                        if (open) {
-                            event.preventDefault();
-                        }
-                    }}
                 >
                     <Settings2
                         size={24}
@@ -127,7 +127,6 @@ export default function SearchSettingsPopover({
                     align="start"
                     sideOffset={10}
                     collisionPadding={12}
-                    onInteractOutside={e => e.preventDefault()}
                     className="
                         z-50 w-80 max-h-[80vh] overflow-y-auto
                         rounded-lg border border-[var(--bg-nav)]
@@ -275,7 +274,7 @@ export default function SearchSettingsPopover({
 
                         <button
                             type="button"
-                            onClick={applySettings}
+                            onClick={closeAndApply}
                             className="
                                 text-sm font-semibold px-4 py-2
                                 rounded-md bg-[var(--app-secondary)]

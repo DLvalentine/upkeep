@@ -27,7 +27,6 @@ export default function Main() {
         strictSearch: true,
         searchKeys: ['name']
     });
-    const [activePopover, setActivePopover] = useState(null);
 
     // Search results
     const [searchResults, setSearchResults] = useState(null);
@@ -135,10 +134,6 @@ export default function Main() {
                     <FilterPopover
                         filters={filters}
                         onApply={setFilters}
-                        open={activePopover === 'filters'}
-                        onOpenChange={open =>
-                            setActivePopover(open ? 'filters' : null)
-                        }
                     />
 
                     <SearchSettingsPopover
@@ -146,10 +141,6 @@ export default function Main() {
                         onApply={setSearchSettings}
                         sortKey={sortKey}
                         onSortKeyChange={setSortKey}
-                        open={activePopover === 'search-settings'}
-                        onOpenChange={open =>
-                            setActivePopover(open ? 'search-settings' : null)
-                        }
                     />
                 </div>
             </div>

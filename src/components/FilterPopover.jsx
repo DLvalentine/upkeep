@@ -75,9 +75,8 @@ function FilterGroup({ title, children }) {
 export default function FilterPopover({
     filters,
     onApply,
-    open,
-    onOpenChange,
 }) {
+    const [open, setOpen] = useState(false);
     const [draft, setDraft] = useState(() => normalizeFilters(filters));
     const [cmcMode, setCmcMode] = useState(() =>
         filters?.cmc?.exact !== undefined ? 'exact' : 'range'
@@ -133,7 +132,7 @@ export default function FilterPopover({
     const resetDraft = () => {
         setDraft(normalizeFilters());
         onApply({});
-        onOpenChange(false);
+        setOpen(false);
     };
 
     const applyFilters = () => {
@@ -146,7 +145,12 @@ export default function FilterPopover({
             Object.keys(normalized.cmc).length > 0;
 
         onApply(hasActiveFilters ? normalized : {});
-        onOpenChange(false);
+    };
+
+    const closeAndApply = () => {
+        applyFilters();
+        suppressCardHover(400);
+        setOpen(false);
     };
 
     const activeCount = getActiveCount(filters);
@@ -157,10 +161,11 @@ export default function FilterPopover({
             open={open}
             onOpenChange={nextOpen => {
                 if (!nextOpen) {
-                    suppressCardHover(400);
+                    closeAndApply();
+                    return;
                 }
 
-                onOpenChange(nextOpen);
+                setOpen(true);
             }}
         >
             <Popover.Trigger asChild>
@@ -169,11 +174,6 @@ export default function FilterPopover({
                     aria-label="Card filters"
                     title={hasActiveFilters ? `${activeCount} active filters` : 'Card filters'}
                     className="relative flex items-center justify-center rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
-                    onClick={event => {
-                        if (open) {
-                            event.preventDefault();
-                        }
-                    }}
                 >
                     <Funnel size={24} style={{ color: 'var(--app-secondary)' }} />
 
@@ -191,7 +191,6 @@ export default function FilterPopover({
                     align="start"
                     sideOffset={10}
                     collisionPadding={12}
-                    onInteractOutside={e => e.preventDefault()}
                     className="z-50 w-80 max-h-[80vh] overflow-y-auto rounded-lg border border-[var(--bg-nav)] bg-[var(--app-panel)] text-[var(--app-text)] shadow-xl p-4"
                 >
                     {/* Header */}
@@ -359,7 +358,7 @@ export default function FilterPopover({
                         <div className="flex items-center gap-2">
                             <button
                                 type="button"
-                                onClick={applyFilters}
+                                onClick={closeAndApply}
                                 className="text-sm font-semibold px-4 py-2 rounded-md bg-[var(--app-secondary)] text-white hover:opacity-90"
                             >
                                 Apply
