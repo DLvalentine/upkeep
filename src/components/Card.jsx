@@ -5,13 +5,18 @@ import { SquarePlus, SquareMinus } from 'lucide-react';
 
 // Utils
 import { isCardHoverSuppressed } from '../util/hoverManager';
+import { getCopyLimit } from '../util/cardRules';
 
-export default function Card({ uri }) {
+export default function Card({ uri, data, addCard, deck, removeCard }) {
     const [loaded, setLoaded] = useState(false);
     const [hovered, setHovered] = useState(false);
     const hoverTimer = useRef(null);
     const cardRef = useRef(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+
+    const copyLimit = getCopyLimit(data);
+    const quantity = deck.cards[data.id]?.quantity ?? 0;
+    const atCopyLimit = copyLimit !== null && quantity >= copyLimit;
 
     const previewWidth = Math.min(
         400 + Math.max(0, (window.innerWidth - 1920) * 0.15),
@@ -119,14 +124,20 @@ export default function Card({ uri }) {
 
                 {loaded && (
                     <div className="flex flex-row gap-4">
-                        <SquareMinus
-                            size={24}
-                            style={{ color: 'var(--app-secondary)' }}
-                        />
-                        <SquarePlus
-                            size={24}
-                            style={{ color: 'var(--app-secondary)' }}
-                        />
+                        <button disabled={deck.cards[data.id] === undefined || deck.cards[data.id]?.quantity === 0}>
+                            <SquareMinus
+                                size={24}
+                                style={{ color: deck.cards[data.id] === undefined || deck.cards[data.id]?.quantity === 0 ? 'red' : 'var(--app-secondary)' }}
+                                onClick={() => { removeCard(data) }}
+                            />
+                        </button>
+                        <button disabled={atCopyLimit}>
+                            <SquarePlus
+                                size={24}
+                                style={{ color: atCopyLimit ? 'red' : 'var(--app-secondary)' }}
+                                onClick={() => { addCard(data) }}
+                            />
+                        </button>
                     </div>
                 )}
             </div>

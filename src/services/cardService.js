@@ -143,8 +143,6 @@ export async function findCards(queryString, strictSearch = true, sortKey = 'edh
         filters.cmc?.min !== undefined ||
         filters.cmc?.max !== undefined;
 
-    console.log(filters.colorIdentityExact)
-
     const filteredCards = hasFilters ? cards.filter(card => {
         // Type filter
         if (types.length > 0) {

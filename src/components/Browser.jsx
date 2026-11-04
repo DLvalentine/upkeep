@@ -1,7 +1,7 @@
 // Components
 import Card from './Card';
 
-export default function Browser({ query, cards }) {
+export default function Browser({ query, cards, addCard, deck, removeCard }) {
     return (
         <div className="h-[85vh] w-[80%] pl-6 flex flex-col gap-4 overflow-y-scroll scrollbar scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)] pr-2">
             <div className="grid grid-cols-5 content-start gap-6">
@@ -12,6 +12,10 @@ export default function Browser({ query, cards }) {
                         <Card
                             key={card.item.id}
                             uri={uri}
+                            data={card.item}
+                            deck={deck}
+                            addCard={addCard}
+                            removeCard={removeCard}
                         />
                     ) : null;
                 })}

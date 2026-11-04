@@ -5,7 +5,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 
 // Services
-import { findCards } from '../services/cardService';
+import { findCards, loadCardData } from '../services/cardService';
 
 // Components
 import Logo from './Logo';
@@ -13,6 +13,36 @@ import SearchBox from './SearchBox';
 import Browser from './Browser';
 import FilterPopover from './FilterPopover';
 import SearchSettingsPopover from './SearchSettingsPopover';
+
+// Utils
+import { getCopyLimit } from '../util/cardRules';
+import { exportDeck, importDeck } from '../util/decklist';
+
+const data = await loadCardData();
+const sampleDeck = importDeck(
+    `
+    Deck
+    4 Gleaming Geardrake (MKM) 205
+    10 Island (USG) 336
+    11 Mountain (USG) 343
+    1 Saheeli, Filigree Master (BRO) 219
+    2 Reckless Detective (MKM) 141
+    2 Curious Inquiry (MKM) 51
+    4 Shock (MKM) 144
+    2 Dramatic Accusation (MKM) 53
+    2 Harried Dronesmith (MKM) 131
+    2 Deduce (MKM) 52
+    4 Sokenzan Smelter (NEO) 164
+    4 Voltage Surge (NEO) 171
+    2 Coastal Bulwark (BRO) 76
+    2 Swiftwater Cliffs (MOM) 273
+    2 Negate (DMU) 58
+    2 Detective's Satchel (MKM) 196
+    2 Mistway Spy (MKM) 65
+    2 The Echoverse Fulcrum (FRA) 169
+    `,
+    data
+);
 
 export default function Main() {
     // Search query and debounce handler.
@@ -30,6 +60,70 @@ export default function Main() {
 
     // Search results
     const [searchResults, setSearchResults] = useState(null);
+
+    const [deck, setDeck] = useState(sampleDeck.deck || { cards: {}, size: 0 });
+
+    const addCard = (card) => {
+        const copyLimit = getCopyLimit(card);
+
+        setDeck(currentDeck => {
+            const existingCard = currentDeck.cards[card.id];
+            const currentQuantity = existingCard?.quantity ?? 0;
+
+            // Enforce the card's copy limit.
+            if (copyLimit !== null && currentQuantity >= copyLimit) {
+                return currentDeck;
+            }
+
+            const cards = { ...currentDeck.cards };
+
+            if (existingCard) {
+                cards[card.id] = {
+                    ...existingCard,
+                    quantity: currentQuantity + 1
+                };
+            } else {
+                cards[card.id] = {
+                    ...card,
+                    quantity: 1
+                };
+            }
+
+            return {
+                cards,
+                size: currentDeck.size + 1
+            };
+        });
+    };
+
+    const removeCard = (card) => {
+        setDeck(currentDeck => {
+            const existingCard = currentDeck.cards[card.id];
+
+            // Nothing to remove.
+            if (!existingCard || existingCard.quantity <= 0) {
+                return currentDeck;
+            }
+
+            const cards = { ...currentDeck.cards };
+            const newQuantity = existingCard.quantity - 1;
+
+            if (newQuantity === 0) {
+                delete cards[card.id];
+            } else {
+                cards[card.id] = {
+                    ...existingCard,
+                    quantity: newQuantity
+                };
+            }
+
+            return {
+                cards,
+                size: currentDeck.size - 1
+            };
+        });
+    };
+
 
     useEffect(() => {
         const query = debouncedQuery.trim();
@@ -148,6 +242,9 @@ export default function Main() {
             <Browser
                 query={debouncedQuery}
                 cards={searchResults}
+                deck={deck}
+                addCard={addCard}
+                removeCard={removeCard}
             />
         </div>
     );
