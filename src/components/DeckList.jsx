@@ -1,11 +1,148 @@
+// Libs
+import { useEffect, useRef, useState } from 'react';
+import { MoonLoader } from 'react-spinners';
+
 // Components
 import ManaCost from './ManaCost';
 
+// Utils
+import { isCardHoverSuppressed } from '../util/hoverManager';
+
 function DeckItem({card}) {
+    const [hovered, setHovered] = useState(false);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [previewLoaded, setPreviewLoaded] = useState(false);
+    const [previewError, setPreviewError] = useState(false);
+    const hoverTimer = useRef(null);
+    const itemRef = useRef(null);
+    const uri = card.image_uris?.normal
+        ?? card.card_faces?.[0]?.image_uris?.normal;
+    const previewWidth = Math.min(
+        400 + Math.max(0, (window.innerWidth - 1920) * 0.15),
+        550
+    );
+    const previewHeight = previewWidth * 1.4 + 16;
+    const offset = 24;
+    const padding = 16;
+
+    useEffect(() => {
+        const item = itemRef.current;
+        if (!item) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    clearTimeout(hoverTimer.current);
+                    setHovered(false);
+                }
+            },
+            { threshold: 0 }
+        );
+
+        observer.observe(item);
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(hoverTimer.current);
+        };
+    }, []);
+
+    const handleMouseMove = (event) => {
+        if (!uri || isCardHoverSuppressed()) {
+            clearTimeout(hoverTimer.current);
+            setHovered(false);
+            return;
+        }
+
+        let x = event.clientX + offset;
+
+        if (x + previewWidth > window.innerWidth - padding) {
+            x = event.clientX - previewWidth - offset;
+        }
+
+        x = Math.max(
+            padding,
+            Math.min(x, window.innerWidth - previewWidth - padding)
+        );
+
+        let y = event.clientY - previewHeight / 2;
+
+        y = Math.max(
+            padding,
+            Math.min(y, window.innerHeight - previewHeight - padding)
+        );
+
+        setPosition({ x, y });
+    };
+
+    const handleMouseEnter = () => {
+        if (!uri || isCardHoverSuppressed()) return;
+
+        hoverTimer.current = setTimeout(() => {
+            if (!isCardHoverSuppressed()) {
+                setHovered(true);
+            }
+        }, 400);
+    };
+
+    const handleMouseLeave = () => {
+        clearTimeout(hoverTimer.current);
+        setHovered(false);
+    };
+
     return(
-        <p>
-            {card.quantity} {card.name} <ManaCost manaCost={card.mana_cost} size={24} />
-        </p>
+        <>
+            <p
+                ref={itemRef}
+                className={uri ? 'cursor-pointer' : undefined}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
+            >
+                {card.quantity} {card.name} <ManaCost manaCost={card.mana_cost} size={20} />
+            </p>
+
+            {hovered && (
+                <div
+                    className="fixed z-[9999] pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95"
+                    style={{
+                        left: position.x,
+                        top: position.y,
+                        transform: 'translateY(-10%)'
+                    }}
+                >
+                    <div
+                        className="relative flex min-h-[16rem] items-center justify-center p-2 bg-[var(--app-panel)] border border-[var(--app-accent)] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_var(--app-accent)]"
+                        style={{ width: `${previewWidth}px` }}
+                    >
+                        {!previewLoaded && !previewError && (
+                            <MoonLoader
+                                color="var(--app-secondary)"
+                                size={32}
+                                speedMultiplier={0.35}
+                            />
+                        )}
+
+                        {previewError ? (
+                            <p className="text-sm text-[var(--text-secondary)]">
+                                Preview unavailable
+                            </p>
+                        ) : (
+                            <img
+                                src={uri}
+                                alt={card.name}
+                                onLoad={() => setPreviewLoaded(true)}
+                                onError={() => setPreviewError(true)}
+                                style={{ width: `${previewWidth - 16}px` }}
+                                className={`h-auto rounded-lg shadow-2xl select-none ${
+                                    previewLoaded ? 'block' : 'hidden'
+                                }`}
+                            />
+                        )}
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 

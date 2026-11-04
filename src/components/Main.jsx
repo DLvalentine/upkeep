@@ -22,29 +22,24 @@ import { importDeck } from '../util/decklist';
 
 const SAMPLE_DECKLIST = `
 Deck
-2 Ashaya, Soul of the Wild (ZNR) 179
-2 Esika's Chariot (KHM) 169
-4 Tajuru Blightblade (ZNR) 208
-4 Werewolf Pack Leader (AFR) 211
-4 Kazandu Nectarpot (ZNR) 190
-2 Apprentice Sharpshooter (VOW) 185
-1 Wedding Invitation (VOW) 260
-1 Kazandu Mammoth (ZNR) 189
-2 Elderleaf Mentor (KHM) 165
-1 Joraga Visionary (ZNR) 188
-2 Choose Your Weapon (AFR) 175
-1 Big Play (STX) 122
-1 Bull's Strength (AFR) 174
-1 Inscription of Abundance (ZNR) 186
-1 Scale the Heights (ZNR) 202
-1 Vastwood Surge (ZNR) 217
-1 You Meet in a Tavern (AFR) 215
-2 Arachnoform (KHM) 159
-12 Forest (AKR) 298
-1 Dormant Grove (VOW) 198
-12 Forest (KLR) 301
-1 Druid Class (AFR) 180
-1 King Harald's Revenge (KHM) 180
+4 Gleaming Geardrake (MKM) 205
+10 Island (USG) 336
+11 Mountain (USG) 343
+1 Saheeli, Filigree Master (BRO) 219
+2 Reckless Detective (MKM) 141
+2 Curious Inquiry (MKM) 51
+4 Shock (MKM) 144
+2 Dramatic Accusation (MKM) 53
+2 Harried Dronesmith (MKM) 131
+2 Deduce (MKM) 52
+4 Sokenzan Smelter (NEO) 164
+4 Voltage Surge (NEO) 171
+2 Coastal Bulwark (BRO) 76
+2 Swiftwater Cliffs (MOM) 273
+2 Negate (DMU) 58
+2 Detective's Satchel (MKM) 196
+2 Mistway Spy (MKM) 65
+2 The Echoverse Fulcrum (FRA) 169
 `;
 
 export default function Main() {
