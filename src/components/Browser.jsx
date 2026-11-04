@@ -12,15 +12,19 @@ export default function Browser({ cards }) {
     const [page, setPage] = useState(1);
 
     return (
-        <div className="h-[85vh] w-[80%] pl-6 flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)]">
-            <div className="grid grid-cols-5 content-start">
-              {cards?.map((card) => {
-                const uri = card?.item?.image_uris?.normal;
-
-                return uri ? (
-                    <img key={card.item.id} src={uri} className='max-h-[85%] w-auto object-contain'/>
-                ) : null;
-              })}
+        <div className="h-[85vh] w-[80%] pl-6 flex flex-col gap-4 overflow-y-auto scrollbar scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)] pr-2">
+            <div className="grid grid-cols-5 content-start gap-x-4 gap-y-4">
+                {cards?.map((card) => {
+                    const uri = card?.item?.image_uris?.normal;
+                    
+                    return uri ? (
+                        <img
+                            key={card.item.id}
+                            src={uri}
+                            className="w-full h-auto object-contain"
+                        />
+                    ) : null;
+                })}
             </div>
         </div>
     );

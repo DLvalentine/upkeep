@@ -7,8 +7,8 @@ export default function SearchBox({ value, onChange, showX, onClickX }) {
             <input
                 style={{
                     boxSizing: 'border-box',
-                    height: '45px',
-                    width: '350px',
+                    height: '55px',
+                    width: '450px',
                     paddingLeft: '15px',
                     paddingRight: '44px'
                 }}

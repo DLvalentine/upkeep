@@ -61,8 +61,8 @@ export default function Main() {
     };
 
     return (
-        <div className='flex flex-col ml-8'>
-            <div className="inline-flex gap-8 items-center">
+        <div className='flex flex-col gap-y-6'>
+            <div className="inline-flex gap-8 items-center bg-[var(--app-accent)] border-b-2 border-[var(--bg-nav)]">
                 <Logo />
 
                 <SearchBox
