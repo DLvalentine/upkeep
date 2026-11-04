@@ -99,7 +99,6 @@ export async function loadCardData() {
     }
 }
 
-// TODO -> need to add in a way to set exact
 /**
  * Search through the card data to find your card(s). Card data is pulled from local cache, filtered, then indexed before being searched.
  * @param {String} queryString - The user's search query
@@ -110,7 +109,7 @@ export async function loadCardData() {
  * @param {Object} filters - Structured card filters.
  * @param {String|Array<String>} filters.type - Card type(s).
  * @param {String|Array<String>} filters.colorIdentity - Required colors.
- * @param {String|Array<String>} filters.colorIdentityMode - If 'exact', will allow for mono-<color> filtering
+ * @param {String|Array<String>} filters.colorIdentityExact - If 'exact', will allow for mono-<color> filtering
  * @param {Number|Object} filters.cmc - Exact mana value or range.
  * @returns {Array<Object>} A filtered, sorted array of Cards
  */
@@ -135,6 +134,8 @@ export async function findCards(queryString, strictSearch = true, sortKey = 'edh
         filters.cmc?.min !== undefined ||
         filters.cmc?.max !== undefined;
 
+    console.log(filters.colorIdentityExact)
+
     const filteredCards = hasFilters ? cards.filter(card => {
         // Type filter
         if (types.length > 0) {
@@ -147,7 +148,7 @@ export async function findCards(queryString, strictSearch = true, sortKey = 'edh
         if (colors.length > 0) {
             const cardColors = card.color_identity ?? [];
 
-            if (filters.colorIdentityMode === 'exact') {
+            if (filters.colorIdentityExact) {
                 if (
                     cardColors.length !== colors.length ||
                     !colors.every(color => cardColors.includes(color))

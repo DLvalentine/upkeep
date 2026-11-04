@@ -41,14 +41,13 @@ function normalizeFilters(filters = {}) {
             : filters.type
                 ? [filters.type]
                 : [],
-
         colorIdentity: Array.isArray(filters.colorIdentity)
             ? [...filters.colorIdentity]
             : filters.colorIdentity
                 ? [filters.colorIdentity]
                 : [],
-
-        cmc
+        colorIdentityExact: filters.colorIdentityExact,
+        cmc,
     };
 }
 
@@ -58,6 +57,7 @@ function getActiveCount(filters = {}) {
     return (
         normalized.type.length +
         normalized.colorIdentity.length +
+        (normalized.colorIdentityExact ? 1 : 0) +
         // Mana value is one logical filter, whether exact or a range.
         (Object.keys(normalized.cmc).length > 0 ? 1 : 0)
     );
@@ -138,6 +138,7 @@ export default function FilterPopover({ filters, onApply }) {
         const hasActiveFilters =
             normalized.type.length > 0 ||
             normalized.colorIdentity.length > 0 ||
+            normalized.colorIdentityExact === true ||
             Object.keys(normalized.cmc).length > 0;
 
         onApply(hasActiveFilters ? normalized : {});
@@ -205,21 +206,33 @@ export default function FilterPopover({ filters, onApply }) {
                     <div className="flex flex-col gap-5">
                         {/* Color Identity */}
                         <FilterGroup title="Color Identity">
-                            <div className="flex flex-wrap gap-2">
-                                {COLOR_OPTIONS.map(color => (
-                                    <label
-                                        key={color.value}
-                                        title={color.label}
-                                        className="flex items-center gap-1.5 cursor-pointer text-sm rounded-md border border-[var(--bg-nav)] px-2 py-1.5 hover:bg-black/10"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={draft.colorIdentity.includes(color.value)}
-                                            onChange={() => toggleValue('colorIdentity', color.value)}
-                                        />
-                                        {color.value}
-                                    </label>
-                                ))}
+                            <div className="flex flex-col">
+                                <div className="flex flex-wrap gap-2">
+                                    {COLOR_OPTIONS.map(color => (
+                                        <label
+                                            key={color.value}
+                                            title={color.label}
+                                            className="flex items-center gap-1.5 cursor-pointer text-sm rounded-md border border-[var(--bg-nav)] px-2 py-1.5 hover:bg-black/10"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={draft.colorIdentity.includes(color.value)}
+                                                onChange={() => toggleValue('colorIdentity', color.value)}
+                                            />
+                                            {color.value}
+                                        </label>
+                                    ))}
+                                </div>
+                                <label
+                                    className="flex items-center gap-1.5 cursor-pointer text-sm rounded-md px-2 py-1.5 select-none"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={draft.colorIdentityExact ?? false}
+                                        onChange={(e) => { setDraft(current => ({ ...current, colorIdentityExact: e.target.checked })) }}
+                                    />
+                                    Exact
+                                </label>
                             </div>
                         </FilterGroup>
 
