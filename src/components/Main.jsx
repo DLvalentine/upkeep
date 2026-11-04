@@ -2,6 +2,7 @@
 // Libs
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Funnel, FunnelPlus } from 'lucide-react';
 
 // Services
 import { findCards } from '../services/cardService';
@@ -15,6 +16,13 @@ export default function Main() {
     // Search query and debounce handler.
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedQuery = useDebounce(searchQuery, 500);
+
+    // Search options
+    const [strictSearch, setStrictSearch] = useState(true);
+    const [sortKey, setSortKey] = useState('edhrec_rank');
+    const [sortDesc, setSortDesc] = useState(true);
+    const [searchKeys, setSearchKeys] = useState(['name']);
+    const [filters, setFilters] = useState({});
 
     // Search results: holds the array of objects returned from the card service's search function
     const [searchResults, setSearchResults] = useState(null);
@@ -30,7 +38,7 @@ export default function Main() {
 
         let cancelled = false;
 
-        findCards(debouncedQuery)
+        findCards(debouncedQuery, strictSearch, sortKey, sortDesc, searchKeys, filters)
             .then(results => {
                 if (!cancelled) {
                     setSearchResults(results);
@@ -45,7 +53,7 @@ export default function Main() {
         return () => {
             cancelled = true;
         };
-    }, [debouncedQuery]);
+    }, [debouncedQuery, sortDesc]);
 
     const handleSearchChange = (e) => {
         const value = e.target.value;
@@ -65,7 +73,7 @@ export default function Main() {
 
     return (
         <div className='flex flex-col gap-y-6'>
-            <div className="inline-flex gap-8 items-center bg-[var(--app-accent)] border-b-2 border-[var(--bg-nav)]">
+            <div className="inline-flex gap-2 items-center bg-[var(--app-accent)] border-b-2 border-[var(--bg-nav)]">
                 <Logo />
 
                 <SearchBox
@@ -74,8 +82,12 @@ export default function Main() {
                     showX={!!searchQuery}
                     onClickX={handleClear}
                 />
+                <div className='inline-flex gap-4'>
+                    {sortDesc && <ArrowDownNarrowWide size={24} style={{ color: 'var(--app-secondary)' }} onClick={() => { setSortDesc(false) }} /> || <ArrowUpNarrowWide size={24} style={{ color: 'var(--app-secondary)' }} onClick={() => { setSortDesc(true) }} />}
+                    {Object.keys(filters)?.length && <FunnelPlus size={24} style={{ color: 'var(--app-secondary)' }} /> || <Funnel size={24} style={{ color: 'var(--app-secondary)' }} />}
+                </div>
             </div>
-            <Browser query={debouncedQuery} cards={searchResults}/>
+            <Browser query={debouncedQuery} cards={searchResults} />
         </div>
     );
 }

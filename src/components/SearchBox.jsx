@@ -3,7 +3,7 @@ import { CircleX } from 'lucide-react';
 
 export default function SearchBox({ value, onChange, showX, onClickX }) {
     return (
-        <div style={{ position: 'relative', display: 'inline-block' }}>
+        <div className='pl-4' style={{ position: 'relative', display: 'inline-block' }}>
             <input
                 style={{
                     boxSizing: 'border-box',

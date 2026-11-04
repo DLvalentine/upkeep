@@ -100,22 +100,92 @@ export async function loadCardData() {
 }
 
 /**
- * TODO - Determine the keys to use or how we pass them (filters). Currently it just finds by name.
- * TODO - Determine how to sort. We can only sort based on keys if we want to do it here and not later on.
- * TODO - tune threshold - ask user if they wanna expand their search maybe. The sweet spot before we have too many results is ~0.19
- * Given a queryString, search through the cards data to try and find the card you're looking for.
- * This search uses fuse, and a threshold of 0.3, which is fairly fuzzy. It will find a handful of matches, even when you use exact wording. 
- * @param {String} queryString - the string to use to search through the data for 
- * @returns {Array<Object>} Array of card objects. See #loadCards for details on relevant fields.
+ * Search through the card data to find your card(s). Card data is pulled from local cache, filtered, then indexed before being searched.
+ * @param {String} queryString - The user's search query
+ * @param {Boolean} strictSearch - Default true, if false the search will be "fuzzy" so even mis-remembered card names (e.g. Enchanting Wilds) will resolve to their proper names (Evolving Wilds)
+ * @param {String} sortKey - The object key to use to sort the results by. Limited to one key for now.
+ * @param {Boolean} sortDesc - If true, sort in descending fashion. If false, ascending.
+ * @param {Array<String>} searchKeys - The object keys to use in your search.
+ * @param {Object} filters - Structured card filters.
+ * @param {String|Array<String>} filters.type - Card type(s).
+ * @param {String|Array<String>} filters.colorIdentity - Required colors.
+ * @param {String|Array<String>} filters.colorIdentityMode - If 'exact', will allow for mono-<color> filtering
+ * @param {Number|Object} filters.cmc - Exact mana value or range.
+ * @returns {Array<Object>} A filtered, sorted array of Cards
  */
-export async function findCards(queryString) {
+export async function findCards(queryString, strictSearch = true, sortKey = 'edhrec_rank', sortDesc = true, searchKeys = ['name'], filters = {}) {
     const cards = await loadCardData();
+    const hasFilters = Object.keys(filters)?.length;
 
-    const fuse = new Fuse(cards, {
-        keys: ['edhrec_rank', 'name'],
-        threshold: 0.19,
+    const filteredCards = hasFilters ? cards.filter(card => {
+        // Type filter
+        if (filters.type) {
+            const types = Array.isArray(filters.type)
+                ? filters.type
+                : [filters.type];
+
+            if (!types.some(type =>
+                card.type_line?.toLowerCase().includes(type.toLowerCase())
+            )) return false;
+        }
+
+        // Color identity filter
+        if (filters.colorIdentity) {
+            const colors = Array.isArray(filters.colorIdentity)
+                ? filters.colorIdentity.map(c => c.toUpperCase())
+                : [filters.colorIdentity.toUpperCase()];
+
+            const cardColors = card.color_identity ?? [];
+
+            if (filters.colorIdentityMode === 'exact') {
+                // Exact match: no additional colors allowed.
+                if (
+                    cardColors.length !== colors.length ||
+                    !colors.every(color => cardColors.includes(color))
+                ) return false;
+            } else {
+                // Default: card must contain all selected colors.
+                if (!colors.every(color => cardColors.includes(color))) {
+                    return false;
+                }
+            }
+        }
+
+        // CMC / mana value filter
+        if (filters.cmc !== undefined) {
+            const cmc = typeof filters.cmc === 'number'
+                ? { exact: filters.cmc }
+                : filters.cmc;
+
+            if (cmc.exact !== undefined && card.cmc !== cmc.exact) {
+                return false;
+            }
+
+            if (cmc.min !== undefined && card.cmc < cmc.min) {
+                return false;
+            }
+
+            if (cmc.max !== undefined && card.cmc > cmc.max) {
+                return false;
+            }
+        }
+
+        return true;
+    }) : cards;
+
+    const fuse = new Fuse(filteredCards, {
+        keys: Array.from(new Set([sortKey, ...searchKeys])),
+        threshold: strictSearch ? 0.19 : 0.39,
         sortFn: (a, b) => {
-            return a.item?.[0]?.v - b.item?.[0]?.v;
+            const aVal = a.item?.[0]?.v;
+            const bVal = b.item?.[0]?.v;
+
+            if (parseInt(aVal, 10) !== NaN) {
+                return sortDesc ? aVal - bVal : bVal - aVal;
+            } else {
+                return sortDesc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+            }
+
         }
     });
 
