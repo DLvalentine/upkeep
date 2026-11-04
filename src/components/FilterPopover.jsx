@@ -72,8 +72,12 @@ function FilterGroup({ title, children }) {
     );
 }
 
-export default function FilterPopover({ filters, onApply }) {
-    const [open, setOpen] = useState(false);
+export default function FilterPopover({
+    filters,
+    onApply,
+    open,
+    onOpenChange,
+}) {
     const [draft, setDraft] = useState(() => normalizeFilters(filters));
     const [cmcMode, setCmcMode] = useState(() =>
         filters?.cmc?.exact !== undefined ? 'exact' : 'range'
@@ -129,7 +133,7 @@ export default function FilterPopover({ filters, onApply }) {
     const resetDraft = () => {
         setDraft(normalizeFilters());
         onApply({});
-        setOpen(false);
+        onOpenChange(false);
     };
 
     const applyFilters = () => {
@@ -142,7 +146,7 @@ export default function FilterPopover({ filters, onApply }) {
             Object.keys(normalized.cmc).length > 0;
 
         onApply(hasActiveFilters ? normalized : {});
-        setOpen(false);
+        onOpenChange(false);
     };
 
     const activeCount = getActiveCount(filters);
@@ -156,7 +160,7 @@ export default function FilterPopover({ filters, onApply }) {
                     suppressCardHover(400);
                 }
 
-                setOpen(nextOpen);
+                onOpenChange(nextOpen);
             }}
         >
             <Popover.Trigger asChild>
@@ -164,7 +168,12 @@ export default function FilterPopover({ filters, onApply }) {
                     type="button"
                     aria-label="Card filters"
                     title={hasActiveFilters ? `${activeCount} active filters` : 'Card filters'}
-                    className="relative flex items-center justify-center"
+                    className="relative flex items-center justify-center rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
+                    onClick={event => {
+                        if (open) {
+                            event.preventDefault();
+                        }
+                    }}
                 >
                     <Funnel size={24} style={{ color: 'var(--app-secondary)' }} />
 

@@ -12,6 +12,7 @@ import Logo from './Logo';
 import SearchBox from './SearchBox';
 import Browser from './Browser';
 import FilterPopover from './FilterPopover';
+import SearchSettingsPopover from './SearchSettingsPopover';
 
 export default function Main() {
     // Search query and debounce handler.
@@ -19,11 +20,14 @@ export default function Main() {
     const debouncedQuery = useDebounce(searchQuery, 500);
 
     // Search options
-    const [strictSearch, setStrictSearch] = useState(true);
     const [sortKey, setSortKey] = useState('edhrec_rank');
     const [sortDesc, setSortDesc] = useState(true);
-    const [searchKeys, setSearchKeys] = useState(['name']);
     const [filters, setFilters] = useState({});
+    const [searchSettings, setSearchSettings] = useState({
+        strictSearch: true,
+        searchKeys: ['name']
+    });
+    const [activePopover, setActivePopover] = useState(null);
 
     // Search results
     const [searchResults, setSearchResults] = useState(null);
@@ -40,10 +44,10 @@ export default function Main() {
 
         findCards(
             query,
-            strictSearch,
+            searchSettings.strictSearch,
             sortKey,
             sortDesc,
-            searchKeys,
+            searchSettings.searchKeys,
             filters
         )
             .then(results => {
@@ -62,10 +66,9 @@ export default function Main() {
         };
     }, [
         debouncedQuery,
-        strictSearch,
+        searchSettings,
         sortKey,
         sortDesc,
-        searchKeys,
         filters
     ]);
 
@@ -102,22 +105,49 @@ export default function Main() {
 
                 <div className="inline-flex gap-4 items-center">
                     {sortDesc ? (
-                        <ArrowDownNarrowWide
-                            size={24}
-                            style={{ color: 'var(--app-secondary)' }}
+                        <button
+                            type="button"
+                            aria-label="Sort ascending"
+                            title="Sort ascending"
                             onClick={() => setSortDesc(false)}
-                        />
+                            className="rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
+                        >
+                            <ArrowDownNarrowWide
+                                size={24}
+                                style={{ color: 'var(--app-secondary)' }}
+                            />
+                        </button>
                     ) : (
-                        <ArrowUpNarrowWide
-                            size={24}
-                            style={{ color: 'var(--app-secondary)' }}
+                        <button
+                            type="button"
+                            aria-label="Sort descending"
+                            title="Sort descending"
                             onClick={() => setSortDesc(true)}
-                        />
+                            className="rounded-md p-1 transition-colors hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--app-secondary)]"
+                        >
+                            <ArrowUpNarrowWide
+                                size={24}
+                                style={{ color: 'var(--app-secondary)' }}
+                            />
+                        </button>
                     )}
 
                     <FilterPopover
                         filters={filters}
                         onApply={setFilters}
+                        open={activePopover === 'filters'}
+                        onOpenChange={open =>
+                            setActivePopover(open ? 'filters' : null)
+                        }
+                    />
+
+                    <SearchSettingsPopover
+                        settings={searchSettings}
+                        onApply={setSearchSettings}
+                        open={activePopover === 'search-settings'}
+                        onOpenChange={open =>
+                            setActivePopover(open ? 'search-settings' : null)
+                        }
                     />
                 </div>
             </div>
