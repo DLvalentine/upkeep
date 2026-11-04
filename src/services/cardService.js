@@ -75,7 +75,7 @@ export async function loadCardData() {
     if (cachedCards && isCacheValid) {
         return cachedCards;
     } else {
-        const res = await fetch('/cards.jsonl.gz');
+        const res = await fetch('/upkeep/public/cards.jsonl.gz');
         const data = await res.arrayBuffer();
         const rawJSONL = await new Response(data).text();
         const parsedJSON = rawJSONL.trim().split('\n').map(JSON.parse).filter(isSearchableCard) || {};
