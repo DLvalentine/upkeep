@@ -8,14 +8,18 @@ import ManaCost from './ManaCost';
 // Utils
 import { isCardHoverSuppressed } from '../util/hoverManager';
 import { SquareMinus, SquarePlus } from 'lucide-react';
+import { getCopyLimit } from '../util/cardRules';
 
-function DeckItem({ card }) {
+function DeckItem({ card, addCard, removeCard }) {
     const [hovered, setHovered] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [previewLoaded, setPreviewLoaded] = useState(false);
     const [previewError, setPreviewError] = useState(false);
+
+
     const hoverTimer = useRef(null);
     const itemRef = useRef(null);
+
     const uri = card.image_uris?.normal
         ?? card.card_faces?.[0]?.image_uris?.normal;
     const previewWidth = Math.min(
@@ -25,6 +29,10 @@ function DeckItem({ card }) {
     const previewHeight = previewWidth * 1.4 + 16;
     const offset = 24;
     const padding = 16;
+
+    const copyLimit = getCopyLimit(card);
+    const quantity = card.quantity ?? 0;
+    const atCopyLimit = copyLimit !== null && quantity >= copyLimit;
 
     useEffect(() => {
         const item = itemRef.current;
@@ -91,34 +99,36 @@ function DeckItem({ card }) {
         setHovered(false);
     };
 
-    console.log(
-        card.colors.map((color) => {
-            return `var(--mana-${color.toLowerCase()}),`
-        }).join(' ')
-    )
     return (
         <>
             <div
                 ref={itemRef}
-               style={{
+                style={{
                     borderRadius: 'var(--border-radius)',
                     border: '1px solid transparent',
                     background: `
                         linear-gradient(var(--app-bg), var(--app-bg)) padding-box,
-                        linear-gradient(to right, ${
-                            card.colors?.length
-                                ? card.colors.map(color => `var(--mana-${color.toLowerCase()})`).join(', ')
-                                : 'var(--mana-nc)'
+                        linear-gradient(to right, ${card.colors?.length
+                            ? card.colors.map(color => `var(--mana-${color.toLowerCase()})`).join(', ')
+                            : 'var(--mana-nc)'
                         }) border-box
                     `
                 }}
                 className={`${uri ? 'cursor-pointer' : undefined} flex flex-row gap-4 items-baseline mb-2.5`}
             >
                 <span className='translate-y-1 ml-2'>
-                    <SquareMinus size={18} />
+                    <button>
+                        <SquareMinus size={18} onClick={() => { removeCard(card) }} />
+                    </button>
                 </span>
                 <span className='translate-y-1 mr-3'>
-                    <SquarePlus size={18} />
+                    <button disabled={atCopyLimit}>
+                        <SquarePlus
+                            size={18}
+                            style={{ color: atCopyLimit ? 'red' : 'var(--app-secondary)' }}
+                            onClick={() => { addCard(card) }}
+                        />
+                    </button>
                 </span>
                 <span>
                     {card.quantity}
@@ -179,7 +189,7 @@ function DeckItem({ card }) {
     );
 }
 
-export default function DeckList({ deck }) {
+export default function DeckList({ deck, addCard, removeCard }) {
     const cards = Object.values(deck.cards).sort((a, b) => {
         const aCmc = Number(a.cmc);
         const bCmc = Number(b.cmc);
@@ -201,7 +211,7 @@ export default function DeckList({ deck }) {
         <div className="flex flex-col gap-2 h-[85vh] flex-[1] min-w-0">
             {cards.map((card) => {
                 return (
-                    <DeckItem key={card.id} card={card} />
+                    <DeckItem key={card.id} card={card} addCard={addCard} removeCard={removeCard} />
                 )
             })}
         </div>

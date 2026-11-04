@@ -286,7 +286,7 @@ export default function Main() {
                     addCard={addCard}
                     removeCard={removeCard}
                 />
-                <DeckList deck={deck}/>
+                <DeckList deck={deck} addCard={addCard} removeCard={removeCard}/>
             </div>
         </div>
     );
