@@ -76,21 +76,25 @@ export async function loadCardData() {
         return cachedCards;
     } else {
         const res = await fetch(`${import.meta.env.BASE_URL}cards.jsonl.gz`);
-
-        console.log({
-            url: res.url,
-            status: res.status,
-            contentType: res.headers.get('content-type'),
-            contentEncoding: res.headers.get('content-encoding'),
-            contentLength: res.headers.get('content-length'),
-        });
-
         const data = await res.arrayBuffer();
-        const rawJSONL = await new Response(data).text();
-        const parsedJSON = rawJSONL.trim().split('\n').map(JSON.parse).filter(isSearchableCard) || {};
+
+        // Gzip files begin with the magic byte signature 0x1F 0x8B.
+        // Check the response to determine whether the browser has already
+        // decompressed it (Content-Encoding: gzip) or if manual decompression
+        // is necessary.
+        const isGzipped = new Uint8Array(data)[0] === 0x1f;
+        const rawJSONL = isGzipped
+            ? await new Response(
+                new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))
+            ).text()
+            : new TextDecoder().decode(data);
+
+        // Proceed with parsing
+        const parsedJSON = rawJSONL.trim().split('\n').map(JSON.parse).filter(isSearchableCard);
 
         await localforage.setItem('cards', parsedJSON);
         await localforage.setItem('lastUpdated', Date.now());
+
         return parsedJSON;
     }
 }
