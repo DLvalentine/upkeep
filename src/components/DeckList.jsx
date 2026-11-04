@@ -114,7 +114,7 @@ function DeckItem({ card, addCard, removeCard }) {
                         }) border-box
                     `
                 }}
-                className={`${uri ? 'cursor-pointer' : undefined} flex flex-row gap-4 items-baseline mb-2.5`}
+                className={`${uri ? 'cursor-pointer' : undefined} flex flex-row gap-4 items-baseline mb-1.5`}
             >
                 <span className='translate-y-1 ml-2'>
                     <button>
@@ -208,7 +208,7 @@ export default function DeckList({ deck, addCard, removeCard }) {
     });
 
     return (
-        <div className="flex flex-col gap-2 h-[85vh] flex-[1] min-w-0">
+        <div className="flex flex-col gap-2 h-[85vh] flex-[1] min-w-0 overflow-y-scroll scrollbar scrollbar-track-[var(--app-panel)] scrollbar-thumb-[var(--app-accent)] pr-2">
             {cards.map((card) => {
                 return (
                     <DeckItem key={card.id} card={card} addCard={addCard} removeCard={removeCard} />
