@@ -8,13 +8,18 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npx gh-pages-clean && npm run build && gh-pages -d dist"
+    "deploy": "python update_card_data.py && npx gh-pages-clean && npm run build && gh-pages -d dist"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "@uidotdev/usehooks": "^2.4.1",
     "fuse.js": "^7.5.0",
     "localforage": "^1.10.0",
+    "lucide-react": "^1.67.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "tailwind-scrollbar": "^4.0.2",
+    "tailwindcss": "^4.3.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,13 +1,28 @@
-:root {
-    /* TYPOGRAPHY */
-    --font-family: 'DM Sans', sans-serif;
+/* DESIGN TOKENS */
 
-    /* COLOR */
-    --app-bg: #F5E5CC;
-    --app-nav: #21162F;
-    --app-primary: #F3B943;
-    --app-secondary: #382344;
-    --app-panel: #FFF1DC;
-    --app-accent: #C98B35;
-    --text-primary: #30243A;
+@import url('https://fonts.googleapis.com/css2?family=Jim+Nightshade&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  /* TYPOGRAPHY */
+  --font-family: 'Roboto', sans-serif;
+
+  /* COLOR */
+  --app-bg: #F5E5CC;
+  --app-nav: #21162F;
+  --app-primary: #F3B943;
+  --app-secondary: #382344;
+  --app-panel: #FFF1DC;
+  --app-accent: #C98B35;
+  --text-primary: #30243A;
+
+  /* RADII */
+  --border-radius: 10px;
+}
+
+.brand-font {
+  font-family: 'Jim Nightshade', cursive;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 75px;
+  letter-spacing: 4px;
 }

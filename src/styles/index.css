@@ -1,5 +1,26 @@
+/* GLOBAL STYLING AND TAILWIND IMPORT */
+
+@import 'tailwindcss';
+@plugin "tailwind-scrollbar";
+
 body {
+    margin: 0;
+    padding: 0;
     background-color: var(--app-bg);
     font-family: var(--font-family);
     color: var(--text-primary);
+}
+
+input[type='text'] {
+    background-color: var(--app-bg);
+    border: 2px solid var(--app-nav);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+input[type='text']:focus {
+    outline: none;
+    border-color: var(--app-secondary);
+    background-color: var(--app-panel);
 }
