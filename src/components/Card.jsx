@@ -1,6 +1,7 @@
 // Libs
-import { useState, useRef } from "react";
-import { MoonLoader } from "react-spinners";
+import { useState, useRef } from 'react';
+import { MoonLoader } from 'react-spinners';
+import { SquarePlus, SquareMinus } from 'lucide-react';
 
 export default function Card({ uri }) {
     const [loaded, setLoaded] = useState(false);
@@ -55,10 +56,7 @@ export default function Card({ uri }) {
     return (
         <>
             <div
-                className="relative w-full flex justify-center items-center aspect-[5/7]"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onMouseMove={handleMouseMove}
+                className="relative w-full flex justify-center items-center aspect-[5/7] flex flex-col gap-1"
             >
                 {!loaded && (
                     <div className="absolute inset-0 flex justify-center items-center">
@@ -73,40 +71,34 @@ export default function Card({ uri }) {
                 <img
                     src={uri}
                     loading="lazy"
-                    className="w-full h-auto object-contain z-10 cursor-pointer"
+                    className="w-full h-auto object-contain z-10 cursor-pointer select-none"
                     onLoad={() => setLoaded(true)}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseMove={handleMouseMove}
                 />
+                 {loaded &&
+                    <div className='flex flex-row gap-4'>
+                        <SquareMinus size={24} style={{color: 'var(--app-secondary)'}} />
+                        <SquarePlus size={24} style={{color: 'var(--app-secondary)'}} />
+                    </div>
+                }
             </div>
 
             {hovered && (
                 <div
-                    className="
-                        fixed z-[9999]
-                        pointer-events-none
-                        transition-opacity duration-150
-                        animate-in fade-in zoom-in-95
-                    "
+                    className="fixed z-[9999] pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95"
                     style={{
                         left: position.x,
                         top: position.y,
                         transform: "translateY(-10%)"
                     }}
                 >
-                    <div className="
-                        p-2
-                        bg-[var(--app-panel)]
-                        border border-[var(--app-accent)]
-                        rounded-xl
-                        shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_var(--app-accent)]
-                    ">
+                    <div className="p-2 bg-[var(--app-panel)] border border-[var(--app-accent)] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_var(--app-accent)]">
                         <img
                             src={uri}
                             style={{ width: `${previewWidth - 16}px` }}
-                            className="
-                                h-auto
-                                rounded-lg
-                                shadow-2xl
-                            "
+                            className="h-auto rounded-lg shadow-2xl select-none"
                         />
                     </div>
                 </div>

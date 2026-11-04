@@ -34,7 +34,7 @@ export default function SearchBox({ value, onChange, showX, onClickX }) {
                         cursor: 'pointer'
                     }}
                 >
-                    <CircleX size={24} />
+                    <CircleX size={24} style={{color: 'var(--app-secondary)'}} />
                 </button>
             )}
         </div>
