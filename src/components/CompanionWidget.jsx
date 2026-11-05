@@ -23,8 +23,22 @@ export default function CompanionWidget({ onEnd }) {
         (async () => {
             try {
                 const instance = await NapsterCompanionApiSdk.init(fetchToken, {
-                    mountContainer: containerRef.current,
-                    position: 'bottom-right',
+                    layout: {
+                        type: 'inline',
+                        mountContainer: containerRef.current
+                    },
+                    style: {
+                        view: 'rectangle',
+                        accentColor: '#C98B35'
+                    },
+                    features: {
+                        disclaimer: {
+                            enabled: false
+                        },
+                        screenShare: {
+                            enabled: true
+                        },
+                    },
                     onDestroy: () => {
                         instanceRef.current = null;
                         if (!cancelled) onEndRef.current?.();
@@ -48,5 +62,5 @@ export default function CompanionWidget({ onEnd }) {
         };
     }, []);
 
-    return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
+    return <div ref={containerRef} style={{ width: '176px', height: '150px', position: 'absolute', bottom: 15, left: 15 }} />;
 }

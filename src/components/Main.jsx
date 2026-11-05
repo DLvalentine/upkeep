@@ -2,7 +2,12 @@
 // Libs
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Upload, Download } from 'lucide-react';
+import {
+    ArrowDownNarrowWide,
+    ArrowUpNarrowWide,
+    Upload,
+    Download
+} from 'lucide-react';
 
 // Services
 import { findCards, loadCardData } from '../services/cardService';
@@ -44,6 +49,32 @@ Deck
 `;
 
 export default function Main() {
+    // Card data
+    const [cardData, setCardData] = useState([]);
+    const [isCardDataReady, setIsCardDataReady] = useState(false);
+    const [cardDataError, setCardDataError] = useState(false);
+    const [loadAttempt, setLoadAttempt] = useState(0);
+
+    // Search query and debounce
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedQuery = useDebounce(searchQuery, 500);
+
+    // Search options
+    const [sortKey, setSortKey] = useState('edhrec_rank');
+    const [sortDesc, setSortDesc] = useState(false);
+    const [filters, setFilters] = useState({});
+    const [searchSettings, setSearchSettings] = useState({
+        strictSearch: true,
+        searchKeys: ['name']
+    });
+
+    // Search results
+    const [searchResults, setSearchResults] = useState(null);
+
+    // Deck
+    const [deck, setDeck] = useState({ cards: {}, size: 0 });
+
+    // Import deck from clipboard
     const handleImportDeck = async () => {
         try {
             const decklist = await navigator.clipboard.readText();
@@ -73,6 +104,7 @@ export default function Main() {
         }
     };
 
+    // Export deck to clipboard
     const handleExportDeck = async () => {
         try {
             const decklist = exportDeck(deck);
@@ -85,30 +117,6 @@ export default function Main() {
             alert('Unable to copy deck to clipboard.');
         }
     };
-
-    // Card data is required before the sample deck can be resolved.
-    const [cardData, setCardData] = useState([]);
-    const [isCardDataReady, setIsCardDataReady] = useState(false);
-    const [cardDataError, setCardDataError] = useState(false);
-    const [loadAttempt, setLoadAttempt] = useState(0);
-
-    // Search query and debounce handler.
-    const [searchQuery, setSearchQuery] = useState('');
-    const debouncedQuery = useDebounce(searchQuery, 500);
-
-    // Search options
-    const [sortKey, setSortKey] = useState('edhrec_rank');
-    const [sortDesc, setSortDesc] = useState(false);
-    const [filters, setFilters] = useState({});
-    const [searchSettings, setSearchSettings] = useState({
-        strictSearch: true,
-        searchKeys: ['name']
-    });
-
-    // Search results
-    const [searchResults, setSearchResults] = useState(null);
-
-    const [deck, setDeck] = useState({ cards: {}, size: 0 });
 
     // Card data loading effect
     useEffect(() => {
@@ -139,7 +147,8 @@ export default function Main() {
         setLoadAttempt(attempt => attempt + 1);
     };
 
-    const addCard = (card) => {
+    // Add card to deck
+    const addCard = card => {
         const copyLimit = getCopyLimit(card);
 
         setDeck(currentDeck => {
@@ -172,7 +181,8 @@ export default function Main() {
         });
     };
 
-    const removeCard = (card) => {
+    // Remove card from deck
+    const removeCard = card => {
         setDeck(currentDeck => {
             const existingCard = currentDeck.cards[card.id];
 
@@ -199,7 +209,6 @@ export default function Main() {
             };
         });
     };
-
 
     // Primary search effect
     useEffect(() => {
@@ -242,7 +251,7 @@ export default function Main() {
         filters
     ]);
 
-    const handleSearchChange = (e) => {
+    const handleSearchChange = e => {
         const value = e.target.value;
 
         setSearchQuery(value);
@@ -269,7 +278,7 @@ export default function Main() {
     return (
         <div className="flex flex-col gap-y-6">
             <div className="
-                inline-flex gap-2 items-center
+                flex w-full gap-2 items-center
                 bg-[var(--app-accent)]
                 border-b-2 border-[var(--bg-nav)]
             ">
@@ -348,11 +357,14 @@ export default function Main() {
                             style={{ color: 'var(--app-secondary)' }}
                         />
                     </button>
-                    <CompanionLauncher/>
+                </div>
+
+                <div className="ml-auto shrink-0 pr-12">
+                    <CompanionLauncher />
                 </div>
             </div>
 
-            <div className='flex flex-row gap-2'>
+            <div className="flex flex-row gap-2">
                 <Browser
                     query={debouncedQuery}
                     cards={searchResults}
@@ -360,7 +372,12 @@ export default function Main() {
                     addCard={addCard}
                     removeCard={removeCard}
                 />
-                <DeckList deck={deck} addCard={addCard} removeCard={removeCard} />
+
+                <DeckList
+                    deck={deck}
+                    addCard={addCard}
+                    removeCard={removeCard}
+                />
             </div>
         </div>
     );
