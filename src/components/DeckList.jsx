@@ -108,7 +108,7 @@ function DeckItem({ card, addCard, removeCard }) {
                     border: '2px solid transparent',
                     background: `
                         linear-gradient(var(--app-bg), var(--app-bg)) padding-box,
-                        linear-gradient(to right, ${card.colors?.length
+                        linear-gradient(to left, ${card.colors?.length
                             ? card.colors.map(color => `var(--mana-${color.toLowerCase()})`).join(', ')
                             : 'var(--mana-nc)'
                         }) border-box

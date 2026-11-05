@@ -119,7 +119,8 @@ export default function CompanionWidget({ onEnd }) {
                 height: '200px',
                 position: 'absolute',
                 bottom: 15,
-                left: 15
+                left: 15,
+                zIndex: '9999'
             }}
         />
     );

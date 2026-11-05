@@ -44,3 +44,44 @@ Deck
 12 Forest (KLR) 301
 1 Druid Class (AFR) 180
 1 King Harald's Revenge (KHM) 180
+
+===================
+
+Deck
+1 Annex Sentry (ONE) 2
+4 Crawling Chorus (ONE) 8
+4 Jawbone Duelist (ONE) 18
+4 Skrelv, Defector Mite (ONE) 33
+3 Charge of the Mites (ONE) 6
+2 Destroy Evil (DMU) 17
+1 Expel the Interlopers (WOE) 13
+4 Lay Down Arms (BRO) 11
+2 White Sun's Twilight (ONE) 38
+3 Ossification (ONE) 26
+4 Skrelv's Hive (ONE) 34
+3 Tocasia's Welcome (BRO) 30
+4 Mirrex (ONE) 254
+2 The Seedcore (ONE) 259
+19 Plains (USG) 333
+
+
+===================
+
+Deck
+1 Raid Bombardment (ANB) 82
+1 Torbran, Thane of Red Fell (ELD) 147
+1 Krenko, Mob Boss (FDN) 204
+1 Krenko's Command (J25) 140
+1 Krenko, Tin Street Kingpin (J25) 572
+1 Goblin Warchief (DAR) 130
+1 Pashalik Mons (MH1) 138
+1 Stadium Headliner (TDM) 122
+1 Tin Street Cadet (ANB) 87
+1 Goblin Instigator (M19) 142
+1 Hexing Squelcher (ECL) 145
+1 Searslicer Goblin (FDN) 93
+1 Shock Brigade (TDM) 120
+1 Legion Warboss (GRN) 109
+1 Relic Robber (ZNR) 153
+1 Misty Mountains Raider (HOB) 105
+1 Goblin Gathering (ANB) 71
