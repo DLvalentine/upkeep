@@ -1,4 +1,30 @@
+Examples of things to ask Dex:
+==============================
+
+/**** MTG RULES ****/
+
+1. Explain the difference between "Protection from color" and "Hexproof from color"
+2. Ask about the spell stack and casting speed
+3. Ask about first strike and double strike
+4. Ask about deathstrike, and how that works with first strike or double strike
+
+/**** CARDS ****/
+
+1. I love Magic for its classic artwork. What's an older card that just screams Magic: The Gathering?
+2. Is it Enchanting Wilds... or Evolving Wilds? I can't remember - that one card that lets you search your library for a land card.
+3. Ask to show me a random card - maybe a cult classic or less-popular but fun one
+    - The first time I asked this I got Atog, which yielded lots of results and started a fun conversation about Commander
+
+/**** CULTURE ****/
+
+1. Ask about banding and why it doesn't exist anymore
+    - Note that his explanation actually helped me understand banding more lol
+2. Ask about the popular formats
+
 Demo Notes:
+============
+
+Some notes for a live, or recorded session with Dex. I have tested the below cases and get good responses from them. There's always room for tuning, but this is a great demo.
 
 1. Mono White Toxic
 

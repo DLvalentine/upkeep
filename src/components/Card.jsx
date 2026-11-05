@@ -24,7 +24,7 @@ export default function Card({ uri, data, addCard, deck, removeCard }) {
     );
     const previewHeight = previewWidth * 1.4 + 16;
     const offset = 24;
-    const padding = 16;
+    const padding = 64;
 
     // Dismiss preview when the card leaves the viewport
     useEffect(() => {

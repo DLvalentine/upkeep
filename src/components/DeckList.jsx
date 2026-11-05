@@ -28,7 +28,7 @@ function DeckItem({ card, addCard, removeCard }) {
     );
     const previewHeight = previewWidth * 1.4 + 16;
     const offset = 24;
-    const padding = 16;
+    const padding = 64;
 
     const copyLimit = getCopyLimit(card);
     const quantity = card.quantity ?? 0;
