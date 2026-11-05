@@ -4,7 +4,7 @@ import CompanionWidget from './CompanionWidget';
 
 const COOLDOWN_MS = 1200;
 
-export default function CompanionLauncher() {
+export default function CompanionLauncher({ setSearchQuery, deck, setFilters, setSearchSettings }) {
   const [started, setStarted] = useState(false);
   const [cooling, setCooling] = useState(false);
   const timerRef = useRef(null);
@@ -17,7 +17,7 @@ export default function CompanionLauncher() {
     timerRef.current = setTimeout(() => setCooling(false), COOLDOWN_MS);
   };
 
-  if (started) return <CompanionWidget onEnd={handleEnd} />;
+  if (started) return <CompanionWidget deck={deck} setSearchQuery={setSearchQuery} setFilters={setFilters} setSearchSettings={setSearchSettings} onEnd={handleEnd} />;
 
   return (
     <>

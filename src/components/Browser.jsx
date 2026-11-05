@@ -38,7 +38,7 @@ export default function Browser({ query, cards, addCard, deck, removeCard }) {
                 {!query &&
                     <div className='w-200'>
                         <h1 className='text-4xl mb-4'>Welcome to Upkeep!</h1>
-                        <p className='text-md mb-12'>
+                        <p className='text-md mb-8'>
                             A <a href="https://magic.wizards.com/en/how-to-play" target="_blank" rel="noopener noreferrer"><strong>Magic: The Gathering</strong></a> deck
                             building assistant, and an example of an application that recently integrated with Napster to make it more intelligent and more capable. Built from the ground up in two days.
                         </p>
@@ -61,8 +61,8 @@ export default function Browser({ query, cards, addCard, deck, removeCard }) {
                                 rules-aware thinking, and agent-driven deck suggestions. The two days went
                                 into that, and the interface is deliberately simple so the substance stays in focus.
                             </li>
-                            <li className='mb-2'>Designed for desktop displays (1080p and up), so everything you need stays in view at once.</li>
-                            <li className='mb-2'>Written mostly by hand to show my technical ability, with some AI assistance.</li>
+                            <li className='mb-2'><strong>Designed for desktop displays</strong> (1080p and up), so everything you need stays in view at once.</li>
+                            <li className='mb-2'><strong>Written by hand</strong> to show my technical ability, with some AI assistance.</li>
                         </ul>
                     </div>
                 }

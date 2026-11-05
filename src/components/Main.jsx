@@ -28,24 +28,21 @@ import { importDeck, exportDeck } from '../util/decklist';
 
 const SAMPLE_DECKLIST = `
 Deck
-4 Gleaming Geardrake (MKM) 205
-10 Island (USG) 336
-11 Mountain (USG) 343
-1 Saheeli, Filigree Master (BRO) 219
-2 Reckless Detective (MKM) 141
-2 Curious Inquiry (MKM) 51
-4 Shock (MKM) 144
-2 Dramatic Accusation (MKM) 53
-2 Harried Dronesmith (MKM) 131
-2 Deduce (MKM) 52
-4 Sokenzan Smelter (NEO) 164
-4 Voltage Surge (NEO) 171
-2 Coastal Bulwark (BRO) 76
-2 Swiftwater Cliffs (MOM) 273
-2 Negate (DMU) 58
-2 Detective's Satchel (MKM) 196
-2 Mistway Spy (MKM) 65
-2 The Echoverse Fulcrum (FRA) 169
+1 Annex Sentry (ONE) 2
+4 Crawling Chorus (ONE) 8
+4 Jawbone Duelist (ONE) 18
+4 Skrelv, Defector Mite (ONE) 33
+3 Charge of the Mites (ONE) 6
+2 Destroy Evil (DMU) 17
+1 Expel the Interlopers (WOE) 13
+4 Lay Down Arms (BRO) 11
+2 White Sun's Twilight (ONE) 38
+3 Ossification (ONE) 26
+4 Skrelv's Hive (ONE) 34
+3 Tocasia's Welcome (BRO) 30
+4 Mirrex (ONE) 254
+2 The Seedcore (ONE) 259
+19 Plains (USG) 333
 `;
 
 export default function Main() {
@@ -360,7 +357,7 @@ export default function Main() {
                 </div>
 
                 <div className="ml-auto shrink-0 pr-12">
-                    <CompanionLauncher />
+                    <CompanionLauncher deck={deck} setSearchQuery={setSearchQuery} setFilters={setFilters} setSearchSettings={setSearchSettings} />
                 </div>
             </div>
 
