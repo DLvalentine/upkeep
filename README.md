@@ -20,8 +20,8 @@ is stored in Cloudflare, and my worker hits it from approved domains and utilize
 For local development:
 
 1. Clone this repo
-2. `cd` into the directory where it exists
-3. Run `npm instasll`
+2. `cd` into `upkeep` where it was cloned
+3. Run `npm install`
 4. Run `npm run dev`
 5. Go to `http://localhost:5173/upkeep/` in your browser!
 
