@@ -42,7 +42,7 @@ export default function CompanionWidget({ onEnd }) {
             sdkInstance.sendCommand({
                 type: DataChannelMessageType.SEND_MESSAGE,
                 data: {
-                    text: "The session has just started. Please greet me naturally and welcome me back.",
+                    text: "The session has just started. Please greet me naturally and welcome me to Upkeep.",
                     role: 'user',
                     trigger_response: true
                 }
