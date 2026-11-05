@@ -15,6 +15,7 @@ import FilterPopover from './FilterPopover';
 import SearchSettingsPopover from './SearchSettingsPopover';
 import LoadingScreen from './LoadingScreen';
 import DeckList from './DeckList';
+import CompanionLauncher from './CompanionLauncher';
 
 // Utils
 import { getCopyLimit } from '../util/cardRules';
@@ -347,6 +348,7 @@ export default function Main() {
                             style={{ color: 'var(--app-secondary)' }}
                         />
                     </button>
+                    <CompanionLauncher/>
                 </div>
             </div>
 
