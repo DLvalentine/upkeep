@@ -35,30 +35,35 @@ export default function Browser({ query, cards, addCard, deck, removeCard }) {
                     </div>
                 }
 
-                {!query && 
+                {!query &&
                     <div className='w-200'>
-                        <h1 className='text-4xl mb-4'>Welcome!</h1>
-                        <p className='text-md'>
-                            This is a demo of a fairly complex application that has recently integrated with Napster. <br/>It was built in a fairly
-                            limited amount of time, from the ground up. <br/><br/> As such, it has a few limitations:
-                        </p>
-                        <br/>
-
-                        <ul className='list-disc pl-8 mb-12'>
-                            <li>Mobile views, and smaller desktop views (smaller than 1080p) may be a little cramped.</li>
-                            <li>Some sacrifices were made in UI design to allow more time to work with complex data sets.</li>
-                            <li>As it is meant to demonstrate my technical ability, the majority of it was hand-written, though some AI assistance was used.</li>
-                        </ul>
-
-                        <h1 className='text-4xl mb-4'>So... what is this?</h1>
+                        <h1 className='text-4xl mb-4'>Welcome to Upkeep!</h1>
                         <p className='text-md mb-12'>
-                            This is Upkeep - a <a href="https://magic.wizards.com/en/how-to-play" target="_blank" rel="noopener noreferrer"><strong>Magic: The Gathering</strong></a> deck building assistant. <br/><br/>
-                            As you can see, it contains a card seach - with sorting and filtering - as well as the ability to import and export MTG Arena valid decklists, to be used with the MTG Arena game client. <br/><br/>
-                            On the right is a sample deck list. Hovering over it will show you more details, and you can add or subtract cards up to the limit legally allowed by the game. There's more, but we'll cover that live later. <br/><br/>
-                            Last, but certainly not least - There's <strong>Dex</strong>! He's blinking up there in the top right. Clicking on him will start an interactive session, where you will be able to ask questions, get suggestions, and build better decks faster.
+                            A <a href="https://magic.wizards.com/en/how-to-play" target="_blank" rel="noopener noreferrer"><strong>Magic: The Gathering</strong></a> deck
+                            building assistant, and an example of an application that recently integrated with Napster to make it more intelligent and more capable. Built from the ground up in two days.
                         </p>
 
-                        <h1 className='text-4xl mb-4'>Have fun!</h1>
+                        <h1 className='text-4xl mb-4'>What can it do?</h1>
+                        <p className='text-md mb-12'>
+                            Upkeep has a full card search with sorting and filtering, plus import and export of MTG Arena-valid decklists
+                            you can take straight into the game client. <br /><br />
+                            On the right is a sample deck list. Hover over it for more details, and add or subtract cards up to the limit
+                            the game legally allows. There's more, but we'll cover that live. <br /><br />
+                            And then there's <strong>Dex</strong>! He's blinking up there in the top right. Click him to start an
+                            interactive session where you can ask questions, get suggestions, and build better decks faster.
+                        </p>
+
+                        <h1 className='text-4xl mb-4'>About this build</h1>
+                        <ul className='list-disc pl-8 mb-12'>
+                            <li className='mb-2'>
+                                <strong>Built to test depth.</strong> Flashy UIs are easy, especially with the right libraries. What I wanted to find out was how much
+                                complexity Napster's API and agents could handle: card search and filtering across a large data set (including the internet),
+                                rules-aware thinking, and agent-driven deck suggestions. The two days went
+                                into that, and the interface is deliberately simple so the substance stays in focus.
+                            </li>
+                            <li className='mb-2'>Designed for desktop displays (1080p and up), so everything you need stays in view at once.</li>
+                            <li className='mb-2'>Written mostly by hand to show my technical ability, with some AI assistance.</li>
+                        </ul>
                     </div>
                 }
             </div>
