@@ -62,5 +62,5 @@ export default function CompanionWidget({ onEnd }) {
         };
     }, []);
 
-    return <div ref={containerRef} style={{ width: '176px', height: '150px', position: 'absolute', bottom: 15, left: 15 }} />;
+    return <div ref={containerRef} style={{ width: '176px', height: '200px', position: 'absolute', bottom: 15, left: 15 }} />;
 }

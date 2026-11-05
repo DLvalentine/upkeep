@@ -105,7 +105,7 @@ function DeckItem({ card, addCard, removeCard }) {
                 ref={itemRef}
                 style={{
                     borderRadius: 'var(--border-radius)',
-                    border: '1px solid transparent',
+                    border: '2px solid transparent',
                     background: `
                         linear-gradient(var(--app-bg), var(--app-bg)) padding-box,
                         linear-gradient(to right, ${card.colors?.length
