@@ -49,14 +49,14 @@ export default function Browser({ query, cards, addCard, deck, removeCard }) {
                             you can take straight into the game client. <br /><br />
                             On the right is a sample deck list. Hover over it for more details, and add or subtract cards up to the limit
                             the game legally allows. There's more, but we'll cover that live. <br /><br />
-                            And then there's <strong>Dex</strong>! He's blinking up there in the top right. Click him to start an
-                            interactive session where you can ask questions, get suggestions, and build better decks faster.
+                            But wait - then there's <strong>Dex</strong>! The start of the show! He's blinking up there in the top right. Click him to start an
+                            interactive session where you can ask questions, get suggestions, and build better decks, faster.
                         </p>
 
                         <h1 className='text-4xl mb-4'>About this build</h1>
                         <ul className='list-disc pl-8 mb-12'>
                             <li className='mb-2'>
-                                <strong>Built to test depth.</strong> Flashy UIs are easy, especially with the right libraries. What I wanted to find out was how much
+                                <strong>Built to test depth.</strong> I wanted to find out was how much
                                 complexity Napster's API and agents could handle: card search and filtering across a large data set (including the internet),
                                 rules-aware thinking, and agent-driven deck suggestions. The two days went
                                 into that, and the interface is deliberately simple so the substance stays in focus.

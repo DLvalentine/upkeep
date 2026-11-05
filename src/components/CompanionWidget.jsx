@@ -1,5 +1,5 @@
 // Libs
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NapsterCompanionApiSdk, DataChannelMessageType } from '@touchcastllc/napster-companion-api';
 import '@touchcastllc/napster-companion-api/styles';
 
@@ -24,8 +24,10 @@ async function fetchToken() {
 export default function CompanionWidget({ deck, setSearchQuery, onEnd, setFilters, setSearchSettings }) {
     const containerRef = useRef(null);
     const instanceRef = useRef(null);
+    const endTimerRef = useRef(null);
     const onEndRef = useRef(onEnd);
     const deckRef = useRef(exportDeck(deck));
+    const [isEnding, setIsEnding] = useState(false);
 
     // Keep refs synchronized with the latest props.
     onEndRef.current = onEnd;
@@ -36,6 +38,22 @@ export default function CompanionWidget({ deck, setSearchQuery, onEnd, setFilter
         let sdkInstance = null;
         let agentReady = false;
         let greetingSent = false;
+
+        const finishSession = () => {
+            if (cancelled || endTimerRef.current) {
+                return;
+            }
+
+            instanceRef.current = null;
+            setIsEnding(true);
+            endTimerRef.current = window.setTimeout(() => {
+                endTimerRef.current = null;
+
+                if (!cancelled) {
+                    onEndRef.current?.();
+                }
+            }, 675);
+        };
 
         const sendGreeting = () => {
             if (!sdkInstance || !agentReady || greetingSent || cancelled) {
@@ -136,11 +154,7 @@ export default function CompanionWidget({ deck, setSearchQuery, onEnd, setFilter
                     },
 
                     onDestroy: () => {
-                        instanceRef.current = null;
-
-                        if (!cancelled) {
-                            onEndRef.current?.();
-                        }
+                        finishSession();
                     }
                 });
 
@@ -167,6 +181,8 @@ export default function CompanionWidget({ deck, setSearchQuery, onEnd, setFilter
 
         return () => {
             cancelled = true;
+            window.clearTimeout(endTimerRef.current);
+            endTimerRef.current = null;
             instanceRef.current?.destroy();
             instanceRef.current = null;
         };
@@ -174,15 +190,28 @@ export default function CompanionWidget({ deck, setSearchQuery, onEnd, setFilter
 
     return (
         <div
-            ref={containerRef}
-            style={{
-                width: '176px',
-                height: '200px',
-                position: 'absolute',
-                bottom: 15,
-                left: 15,
-                zIndex: '9999'
-            }}
-        />
+            className={`companion-card${isEnding ? ' companion-card--ending' : ''}`}
+            role="region"
+            aria-label="Dex companion"
+        >
+            <div className="companion-portal" aria-hidden="true">
+                <div className="companion-portal__core" />
+                <div className="companion-portal__ring companion-portal__ring--outer" />
+                <div className="companion-portal__ring companion-portal__ring--inner" />
+                <div className="companion-portal__sparks" />
+            </div>
+            {isEnding && (
+                <div className="companion-portal companion-portal--reverse" aria-hidden="true">
+                    <div className="companion-portal__core" />
+                    <div className="companion-portal__ring companion-portal__ring--outer" />
+                    <div className="companion-portal__ring companion-portal__ring--inner" />
+                    <div className="companion-portal__sparks" />
+                </div>
+            )}
+            <div className="companion-card__foil" aria-hidden="true" />
+            <div className="companion-card__art" ref={containerRef} />
+            <div className="companion-card__corner companion-card__corner--top" aria-hidden="true" />
+            <div className="companion-card__corner companion-card__corner--bottom" aria-hidden="true" />
+        </div>
     );
 }

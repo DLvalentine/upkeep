@@ -59,3 +59,265 @@ input[type='text']:focus {
         min-width: 1200px;
     }
 }
+
+/* Dex's inline SDK mount, framed like a collectible card. */
+.companion-card {
+    bottom: 12px;
+    box-sizing: border-box;
+    height: 244px;
+    left: 12px;
+    padding: 5px;
+    position: absolute;
+    width: 198px;
+    z-index: 9999;
+    animation: companion-card-arrive 540ms 143ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    background:
+        repeating-linear-gradient(12deg, rgba(100, 64, 29, 0.055) 0 1px, transparent 1px 5px),
+        radial-gradient(ellipse at 10% 0%, rgba(255, 255, 255, 0.85), transparent 34%),
+        linear-gradient(145deg, var(--app-panel), var(--app-bg) 47%, #e8c08c);
+    border: 2px solid var(--app-nav);
+    border-radius: 15px 15px 11px 11px;
+    box-shadow:
+        0 0 0 2px var(--app-accent),
+        0 0 0 4px var(--app-nav),
+        0 13px 28px rgba(33, 22, 47, 0.5),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.52),
+        inset 0 0 20px rgba(100, 65, 30, 0.22);
+}
+
+.companion-launcher {
+    isolation: isolate;
+    position: relative;
+}
+
+.companion-launcher__button {
+    position: relative;
+    z-index: 1;
+}
+
+.companion-card::before,
+.companion-card::after {
+    content: '';
+    inset: 3px;
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+}
+
+.companion-card::before {
+    border: 1px solid var(--app-accent);
+    border-radius: 11px 11px 8px 8px;
+    box-shadow: inset 0 0 0 1px rgba(33, 22, 47, 0.68);
+}
+
+.companion-card::after {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.34), transparent 13%, transparent 72%, rgba(201, 139, 53, 0.2));
+    border-radius: inherit;
+    mix-blend-mode: screen;
+}
+
+.companion-card__art {
+    background:
+        radial-gradient(ellipse at 50% 12%, rgba(100, 75, 121, 0.5), transparent 56%),
+        linear-gradient(145deg, var(--app-nav), #100a19);
+    height: 230px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    width: 184px;
+    z-index: 2;
+}
+
+.companion-card__art #np_companion-sdk-root {
+    border-radius: 8px;
+}
+
+.companion-card__foil {
+    background:
+        linear-gradient(90deg, transparent 6%, var(--app-accent) 6% 9%, transparent 9% 91%, var(--app-accent) 91% 94%, transparent 94%),
+        linear-gradient(90deg, transparent 19%, var(--app-nav) 19% 21%, transparent 21% 79%, var(--app-nav) 79% 81%, transparent 81%),
+        linear-gradient(90deg, transparent, rgba(255, 241, 220, 0.9), transparent);
+    height: 5px;
+    left: 18px;
+    opacity: 0.75;
+    pointer-events: none;
+    position: absolute;
+    right: 18px;
+    top: 3px;
+    z-index: 4;
+}
+
+.companion-card__corner {
+    border-color: var(--app-nav);
+    border-style: solid;
+    height: 8px;
+    pointer-events: none;
+    position: absolute;
+    width: 18px;
+    z-index: 4;
+}
+
+.companion-card__corner--top {
+    border-width: 1px 1px 0;
+    left: 50%;
+    top: 3px;
+    transform: translateX(-50%);
+}
+
+.companion-card__corner--bottom {
+    border-width: 0 1px 1px;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.companion-portal {
+    inset: -82px -110px -78px;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+}
+
+.companion-portal__core,
+.companion-portal__ring,
+.companion-portal__sparks {
+    left: 50%;
+    position: absolute;
+    top: 51%;
+    transform: translate(-50%, -50%);
+}
+
+.companion-portal__core {
+    background: radial-gradient(ellipse, rgba(200, 247, 255, 0.96) 0%, rgba(57, 184, 255, 0.72) 19%, rgba(20, 111, 255, 0.32) 48%, transparent 71%);
+    border-radius: 50%;
+    filter: blur(3px);
+    height: 320px;
+    mix-blend-mode: screen;
+    width: 400px;
+    animation: companion-portal-core 1.24s ease-out both;
+}
+
+.companion-portal__ring {
+    border: 3px solid rgba(113, 224, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ccf8ff, 0 0 25px #168dff, inset 0 0 13px #5ed8ff;
+    height: 280px;
+    mix-blend-mode: screen;
+    width: 360px;
+}
+
+.companion-portal__ring--outer {
+    animation: companion-portal-ring 1.05s cubic-bezier(0.1, 0.8, 0.2, 1) both;
+}
+
+.companion-portal__ring--inner {
+    border-color: rgba(205, 249, 255, 0.78);
+    height: 192px;
+    opacity: 0;
+    width: 260px;
+    animation: companion-portal-ring 900ms 82ms cubic-bezier(0.1, 0.8, 0.2, 1) both reverse;
+}
+
+.companion-portal__sparks {
+    background:
+        radial-gradient(circle at 11% 48%, #d8fbff 0 1px, transparent 2px),
+        radial-gradient(circle at 24% 16%, #7bdcff 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 47% 7%, #fff 0 1px, transparent 2px),
+        radial-gradient(circle at 72% 22%, #8de4ff 0 1px, transparent 2px),
+        radial-gradient(circle at 90% 55%, #fff 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 70% 87%, #6bc9ff 0 1px, transparent 2px),
+        radial-gradient(circle at 30% 84%, #e2fbff 0 1px, transparent 2px);
+    height: 350px;
+    width: 430px;
+    animation: companion-portal-sparks 1.09s ease-out both;
+}
+
+.companion-portal--reverse .companion-portal__core {
+    animation: companion-portal-core 675ms ease-in both reverse;
+}
+
+.companion-portal--reverse .companion-portal__ring--outer {
+    animation: companion-portal-ring 675ms cubic-bezier(0.4, 0, 0.8, 0.2) both reverse;
+}
+
+.companion-portal--reverse .companion-portal__ring--inner {
+    animation: companion-portal-ring 585ms 75ms cubic-bezier(0.4, 0, 0.8, 0.2) both reverse;
+}
+
+.companion-portal--reverse .companion-portal__sparks {
+    animation: companion-portal-sparks 675ms ease-in both reverse;
+}
+
+.companion-portal--launcher {
+    height: 330px;
+    left: 50%;
+    overflow: visible;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 430px;
+    z-index: 0;
+}
+
+.companion-portal--launcher .companion-portal__core {
+    animation-duration: 675ms;
+}
+
+.companion-portal--launcher .companion-portal__ring--outer {
+    animation-duration: 615ms;
+}
+
+.companion-portal--launcher .companion-portal__ring--inner {
+    animation-duration: 570ms;
+}
+
+.companion-portal--launcher .companion-portal__sparks {
+    animation-duration: 638ms;
+}
+
+@keyframes companion-card-arrive {
+    from {
+        filter: brightness(1.7) saturate(1.45);
+        opacity: 0;
+        transform: scale(0.72);
+    }
+    to {
+        filter: brightness(1) saturate(1);
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes companion-portal-core {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.18); }
+    24% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.65); }
+}
+
+@keyframes companion-portal-ring {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.18) rotate(-25deg); }
+    28% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.42) rotate(18deg); }
+}
+
+@keyframes companion-portal-sparks {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.28) rotate(-8deg); }
+    32% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) rotate(7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .companion-card,
+    .companion-launcher__button,
+    .companion-portal__core,
+    .companion-portal__ring,
+    .companion-portal__sparks {
+        animation: none;
+    }
+
+    .companion-portal {
+        display: none;
+    }
+}
