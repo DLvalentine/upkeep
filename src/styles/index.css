@@ -29,6 +29,31 @@ input[type='text']:focus {
     background-color: var(--app-panel);
 }
 
+.navbar {
+    background-color: var(--app-accent);
+
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 12px,
+            rgba(255, 230, 180, 0.035) 12px,
+            rgba(255, 230, 180, 0.035) 13px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 12px,
+            rgba(80, 35, 20, 0.035) 12px,
+            rgba(80, 35, 20, 0.035) 13px
+        ),
+        linear-gradient(
+            180deg,
+            #d49a43,
+            #bd812d
+        );
+}
+
 @media (max-width: 1024px) {
     :root {
         min-width: 1200px;

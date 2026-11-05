@@ -1,10 +1,9 @@
-
+// Libs
 import { useEffect, useRef } from 'react';
-import {
-    NapsterCompanionApiSdk,
-    DataChannelMessageType
-} from '@touchcastllc/napster-companion-api';
+import { NapsterCompanionApiSdk, DataChannelMessageType } from '@touchcastllc/napster-companion-api';
 import '@touchcastllc/napster-companion-api/styles';
+
+// Utils
 import { exportDeck } from '../util/decklist';
 
 async function fetchToken() {

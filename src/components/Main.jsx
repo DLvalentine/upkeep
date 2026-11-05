@@ -278,6 +278,7 @@ export default function Main() {
                 flex w-full gap-2 items-center
                 bg-[var(--app-accent)]
                 border-b-2 border-[var(--bg-nav)]
+                navbar
             ">
                 <Logo />
 
